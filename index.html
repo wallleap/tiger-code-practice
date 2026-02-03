@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>虎码字根练习</title>
+    <style>
+        @font-face {
+            font-family: 'TumanPUA';
+            src: url('fonts/TumanPUA.ttf') format('truetype');
+        }
+
+        :root {
+            --primary-color: #6366f1; /* Indigo 500 */
+            --primary-hover: #4f46e5; /* Indigo 600 */
+            --bg-gradient-start: #e0e7ff; /* Indigo 100 */
+            --bg-gradient-end: #f3f4f6;   /* Gray 100 */
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #111827; /* Gray 900 */
+            --text-sub: #6b7280;  /* Gray 500 */
+            --success-color: #10b981; /* Emerald 500 */
+            --error-color: #ef4444;   /* Red 500 */
+            --border-radius: 24px;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 3.5rem 3rem;
+            border-radius: 32px;
+            box-shadow: var(--shadow);
+            border: var(--glass-border);
+            width: 100%;
+            max-width: 520px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.12);
+        }
+
+        header {
+            width: 100%;
+            margin-bottom: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary-color), #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            letter-spacing: -0.025em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 0.75rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            transition: all 0.2s ease;
+        }
+        
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-main);
+            font-feature-settings: "tnum";
+            line-height: 1;
+        }
+        
+        .stat-card.progress .stat-value { color: var(--primary-color); }
+        .stat-card.correct .stat-value { color: var(--success-color); }
+        .stat-card.error .stat-value { color: var(--error-color); }
+
+        .root-display-container {
+            margin: 1rem 0 3rem;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .root-display {
+            font-family: 'TumanPUA', sans-serif;
+            font-size: 10rem;
+            color: var(--text-main);
+            line-height: 1;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: default;
+            user-select: none;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+        }
+
+        .root-display.animate-pop {
+            animation: pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .root-main {
+            font-size: 10rem;
+        }
+
+        .root-variant {
+            font-size: 5rem;
+            color: var(--text-sub);
+            margin-left: 1.5rem;
+            font-weight: 400;
+            opacity: 0.6;
+        }
+
+        .root-pinyin {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-top: 1rem;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            min-height: 3rem; /* Keep space even if empty */
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 260px;
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            font-size: 2.5rem;
+            padding: 0.75rem 0;
+            text-align: center; /* 默认居中，但在有提示时需要特别处理，这里我们统一改为左对齐配合 padding */
+            text-align: left;
+            padding-left: 20%; /* 通过 padding 来实现视觉居中 */
+            border: none;
+            border-bottom: 2px solid #e5e7eb;
+            outline: none;
+            background: transparent;
+            color: var(--text-main);
+            font-weight: 600;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            text-transform: lowercase;
+            border-radius: 0;
+            font-family: 'Monaco', 'Consolas', monospace;
+            box-sizing: border-box; /* 确保 padding 计入宽度 */
+        }
+
+        input[type="text"]:focus {
+            border-bottom-color: var(--primary-color);
+            transform: scale(1.02);
+        }
+
+        input[type="text"].error {
+            border-bottom-color: var(--error-color);
+            color: var(--error-color);
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        input[type="text"].success {
+            border-bottom-color: var(--success-color);
+        }
+        
+        input[type="text"].hide-placeholder::placeholder {
+            color: transparent;
+        }
+
+        input[type="text"].transparent-text {
+            color: transparent;
+        }
+
+        .input-hint {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            text-align: left;
+            padding-left: 20%; /* 与输入框保持一致的 padding */
+            transform: translateY(-50%);
+            color: var(--text-sub);
+            font-weight: 600;
+            font-size: 2.5rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-family: 'Monaco', 'Consolas', monospace;
+            letter-spacing: 2px;
+            z-index: -1;
+            box-sizing: border-box;
+        }
+
+        .input-hint.visible {
+            opacity: 0.4;
+        }
+
+        .bottom-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        /* Chip Style Settings */
+        .settings-chips {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .chip:hover {
+            background: rgba(255, 255, 255, 0.7);
+            transform: translateY(-1px);
+        }
+
+        .chip.active {
+            background: #e0e7ff;
+            border-color: #818cf8;
+            color: var(--primary-color);
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+        }
+        
+        .chip input {
+            display: none;
+        }
+        
+        .chip-icon {
+            width: 14px;
+            height: 14px;
+            stroke-width: 2.5;
+        }
+
+        button {
+            background-color: white;
+            color: var(--text-main);
+            border: 1px solid #e5e7eb;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-color: #d1d5db;
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+
+        button.primary {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+        }
+
+        button.primary:hover {
+            box-shadow: 0 6px 10px -1px rgba(79, 70, 229, 0.4);
+        }
+        
+        button.danger-text {
+            color: var(--text-sub);
+            border-color: transparent;
+            background: transparent;
+            box-shadow: none;
+        }
+        
+        button.danger-text:hover {
+            color: var(--error-color);
+            background: #fef2f2;
+            border-color: #fee2e2;
+        }
+
+        /* Animations */
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.5); opacity: 0; filter: blur(10px); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; filter: blur(0); }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #f3f4f6;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), #818cf8);
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Loading State */
+        .loading {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            font-weight: 600;
+            color: var(--primary-color);
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e0e7ff;
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div id="loading-overlay" class="loading">
+            <div class="spinner"></div>
+            <div>正在加载字根数据...</div>
+        </div>
+
+        <header>
+            <h1>虎码字根</h1>
+            <div class="stats-grid">
+                <div class="stat-card progress">
+                    <span class="stat-label">进度</span>
+                    <span class="stat-value" id="progress-text">0 / 0</span>
+                </div>
+                <div class="stat-card correct">
+                    <span class="stat-label">正确</span>
+                    <span class="stat-value" id="correct-count">0</span>
+                </div>
+                <div class="stat-card error">
+                    <span class="stat-label">错误</span>
+                    <span class="stat-value" id="wrong-count">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="root-display-container">
+            <div id="root-char" class="root-display"></div>
+            <div id="root-pinyin" class="root-pinyin"></div>
+        </div>
+
+        <div class="input-wrapper">
+            <input type="text" id="user-input" placeholder="输入编码" autocomplete="off" spellcheck="false">
+            <span id="input-hint" class="input-hint"></span>
+        </div>
+
+        <div class="bottom-section">
+            <div class="settings-chips">
+                <label class="chip" id="chip-random">
+                    <input type="checkbox" id="random-mode" checked onchange="restart(); updateChipState(this)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="chip-icon"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+                    <span>乱序练习</span>
+                </label>
+                <label class="chip" id="chip-auto-hint">
+                    <input type="checkbox" id="auto-hint" onchange="toggleAutoHint(); updateChipState(this)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="chip-icon"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    <span>总是提示</span>
+                </label>
+            </div>
+
+            <div class="controls">
+                <button class="primary" onclick="restart(true)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    重新开始
+                </button>
+                <button onclick="window.location.href='table.html'">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    字根表
+                </button>
+                <button class="danger-text" onclick="resetData()" title="清除保存的进度和设置">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    清除数据
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // IndexedDB Service
+        const dbService = {
+            dbName: 'ZhmnPracticeDB',
+            dbVersion: 1,
+            storeName: 'app_data',
+            db: null,
+
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.dbVersion);
+
+                    request.onerror = (event) => {
+                        console.error("Database error: " + event.target.errorCode);
+                        reject(event.target.errorCode);
+                    };
+
+                    request.onsuccess = (event) => {
+                        this.db = event.target.result;
+                        resolve(this.db);
+                    };
+
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains(this.storeName)) {
+                            db.createObjectStore(this.storeName);
+                        }
+                    };
+                });
+            },
+
+            async save(key, value) {
+                if (!this.db) await this.init();
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([this.storeName], "readwrite");
+                    const store = transaction.objectStore(this.storeName);
+                    const request = store.put(value, key);
+
+                    request.onsuccess = () => resolve();
+                    request.onerror = (e) => reject(e);
+                });
+            },
+
+            async get(key) {
+                if (!this.db) await this.init();
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([this.storeName], "readonly");
+                    const store = transaction.objectStore(this.storeName);
+                    const request = store.get(key);
+
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (e) => reject(e);
+                });
+            },
+            
+            async clear() {
+                if (!this.db) await this.init();
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction([this.storeName], "readwrite");
+                    const store = transaction.objectStore(this.storeName);
+                    const request = store.clear();
+                    request.onsuccess = () => resolve();
+                    request.onerror = (e) => reject(e);
+                });
+            }
+        };
+
+        let roots = [];
+        let currentRoot = null;
+        let stats = { correct: 0, wrong: 0 };
+        let showHint = false;
+        let autoHint = false;
+        let practiceQueue = [];
+        let totalRoots = 0;
+        let hasErroredOnCurrent = false;
+        let tempHint = false;
+
+        const rootDisplay = document.getElementById('root-char');
+        const rootPinyinDisplay = document.getElementById('root-pinyin');
+        const inputField = document.getElementById('user-input');
+        const hintDisplay = document.getElementById('hint-display');
+        const correctCountEl = document.getElementById('correct-count');
+        const wrongCountEl = document.getElementById('wrong-count');
+        const progressBar = document.getElementById('progress-bar');
+        const progressTextEl = document.getElementById('progress-text');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const randomModeCheckbox = document.getElementById('random-mode');
+        const autoHintCheckbox = document.getElementById('auto-hint');
+
+        function updateRootDisplayContent(root) {
+            if (!root || !root.char) return;
+            
+            // Use Array.from to correctly handle unicode characters
+            const chars = Array.from(root.char);
+            const main = chars[0];
+            const variants = chars.slice(1).join('');
+            
+            rootDisplay.innerHTML = '';
+            
+            const mainSpan = document.createElement('span');
+            mainSpan.className = 'root-main';
+            mainSpan.textContent = main;
+            rootDisplay.appendChild(mainSpan);
+            
+            if (variants && variants.trim()) {
+                const variantSpan = document.createElement('span');
+                variantSpan.className = 'root-variant';
+                variantSpan.textContent = variants;
+                rootDisplay.appendChild(variantSpan);
+            }
+            
+            rootPinyinDisplay.textContent = root.pinyin || '';
+        }
+
+        async function initApp() {
+            try {
+                await dbService.init();
+                
+                // 加载设置
+                const settings = await dbService.get('settings');
+                if (settings) {
+                    randomModeCheckbox.checked = settings.randomMode;
+                    autoHintCheckbox.checked = settings.autoHint;
+                    autoHint = settings.autoHint;
+                    if (autoHint) showHint = true;
+                    updateHintUI();
+                }
+                
+                // 初始化 Chip 状态
+                updateChipState(randomModeCheckbox);
+                updateChipState(autoHintCheckbox);
+
+                // 加载数据
+                const response = await fetch('data/虎码字根.txt');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const text = await response.text();
+                parseData(text);
+                
+                // 尝试恢复进度
+                const session = await dbService.get('session');
+                if (session && session.practiceQueue && session.practiceQueue.length > 0) {
+                    console.log('Restoring session...');
+                    stats = session.stats || { correct: 0, wrong: 0 };
+                    practiceQueue = session.practiceQueue;
+                    currentRoot = session.currentRoot;
+                    // 确保 totalRoots 正确，如果 session 里有就用，没有就用 roots.length
+                    // 但实际上 totalRoots 应该是原始数据的长度，用于计算进度
+                    // 如果我们恢复了队列，totalRoots 应该保持不变（即所有字根的数量）
+                    
+                    updateStats();
+                    
+                    if (currentRoot) {
+                        updateRootDisplayContent(currentRoot);
+                        rootDisplay.classList.remove('animate-pop'); // 恢复时不播放动画，或者播放也行
+                        updateHint();
+                        updateProgress();
+                    } else {
+                        nextRoot(); // 如果只有队列没有当前字，取下一个
+                    }
+                    
+                    loadingOverlay.classList.add('hidden');
+                } else {
+                    loadingOverlay.classList.add('hidden');
+                    restart(false); // 不强制重置，只是开始
+                }
+
+            } catch (error) {
+                loadingOverlay.textContent = "初始化失败";
+                console.error(error);
+            }
+        }
+
+        function parseData(text) {
+            const lines = text.split('\n');
+            const newRoots = [];
+            
+            lines.forEach(line => {
+                const parts = line.trim().split(/\s+/);
+                if (parts.length >= 2) {
+                     let code, char, pinyin;
+                     const lastPart = parts[parts.length - 1];
+                     
+                     if (lastPart.startsWith('[') && lastPart.endsWith(']')) {
+                         pinyin = lastPart.slice(1, -1);
+                         code = parts[parts.length - 2];
+                         char = parts.slice(0, -2).join(' ');
+                     } else {
+                         code = lastPart;
+                         char = parts.slice(0, -1).join(' ');
+                     }
+                     
+                     if (char && code) {
+                         newRoots.push({ char, code, pinyin });
+                     }
+                }
+            });
+            
+            roots = newRoots;
+            totalRoots = roots.length;
+            console.log(`Loaded ${totalRoots} roots.`);
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function updateChipState(input) {
+            const label = input.parentElement;
+            if (input.checked) {
+                label.classList.add('active');
+            } else {
+                label.classList.remove('active');
+            }
+        }
+
+        // isUserAction: 是否是用户点击“重来”按钮触发的
+        function restart(isUserAction = false) {
+            // 如果是用户点击重来，或者初始化时没有存档，则重置所有状态
+            if (isUserAction || practiceQueue.length === 0) {
+                stats = { correct: 0, wrong: 0 };
+                updateStats();
+                
+                if (randomModeCheckbox.checked) {
+                    practiceQueue = shuffle([...roots]);
+                } else {
+                    // Reverse so that pop() takes the first element (top of the list)
+                    practiceQueue = [...roots].reverse();
+                }
+                
+                // 重置时也重置提示状态（除非自动提示开启）
+                showHint = autoHint;
+                updateHintUI();
+                
+                nextRoot();
+                inputField.value = '';
+                inputField.focus();
+                resetInputState();
+            }
+        }
+
+        function nextRoot() {
+            if (practiceQueue.length === 0) {
+                rootDisplay.textContent = "🎉";
+                hintDisplay.textContent = "练习完成！";
+                hintDisplay.classList.add('visible');
+                inputField.disabled = true;
+                progressBar.style.width = '100%';
+                
+                // 清除 session
+                dbService.save('session', null);
+                return;
+            }
+
+            currentRoot = practiceQueue.pop();
+            hasErroredOnCurrent = false;
+            tempHint = false;
+            
+            // Animation
+            rootDisplay.classList.remove('animate-pop');
+            void rootDisplay.offsetWidth; // trigger reflow
+            
+            updateRootDisplayContent(currentRoot);
+            
+            rootDisplay.classList.add('animate-pop');
+            
+            // Auto hint
+            showHint = autoHint;
+            tempHint = false;
+            updateHint();
+            updateProgress();
+            
+            // 保存进度
+            saveSession();
+        }
+
+        function checkInput() {
+            const input = inputField.value.trim().toLowerCase();
+            if (!currentRoot) return;
+
+            resetInputState();
+
+            // 完全匹配
+            if (input === currentRoot.code) {
+                if (!hasErroredOnCurrent) {
+                    stats.correct++;
+                }
+                inputField.classList.add('success');
+                
+                // 立即保存统计数据（虽然 nextRoot 也会保存，但为了准确性）
+                // 也可以等到 nextRoot 再保存
+                
+                setTimeout(() => {
+                    inputField.value = '';
+                    inputField.classList.remove('success');
+                    nextRoot();
+                    updateStats();
+                }, 150);
+            } else {
+                // 检查是否是前缀
+                if (!currentRoot.code.startsWith(input)) {
+                    if (!hasErroredOnCurrent) {
+                        stats.wrong++;
+                        hasErroredOnCurrent = true;
+                        updateStats();
+                        saveSession(); // 错误数改变也保存一下
+                    }
+                    inputField.classList.add('error');
+                    inputField.value = '';
+                    tempHint = true;
+                    updateHint();
+                    
+                    // 移除错误样式以便下次触发
+                    setTimeout(() => {
+                        inputField.classList.remove('error');
+                    }, 400);
+                }
+            }
+        }
+        
+        function saveSession() {
+            dbService.save('session', {
+                stats,
+                practiceQueue,
+                currentRoot
+            });
+        }
+        
+        function saveSettings() {
+            dbService.save('settings', {
+                randomMode: randomModeCheckbox.checked,
+                autoHint: autoHintCheckbox.checked
+            });
+        }
+
+        function resetInputState() {
+            inputField.classList.remove('error');
+            inputField.classList.remove('success');
+        }
+
+        function updateStats() {
+            correctCountEl.textContent = stats.correct;
+            wrongCountEl.textContent = stats.wrong;
+        }
+        
+        function updateProgress() {
+            // 注意：practiceQueue 是剩余的
+            const current = totalRoots - practiceQueue.length;
+            const progress = (current / totalRoots) * 100;
+            progressBar.style.width = `${progress}%`;
+            
+            if (progressTextEl) {
+                progressTextEl.textContent = `${current} / ${totalRoots}`;
+            }
+        }
+
+        function showOneTimeHint() {
+            showHint = true;
+            updateHint();
+            inputField.focus();
+        }
+        
+        function toggleAutoHint() {
+            autoHint = autoHintCheckbox.checked;
+            showHint = autoHint;
+            updateHint();
+            inputField.focus();
+            saveSettings();
+        }
+        
+        // 监听 randomMode 变化，保存设置
+        randomModeCheckbox.addEventListener('change', () => {
+            saveSettings();
+            restart(true); // 模式改变通常需要重来
+        });
+        
+        function updateHintUI() {
+             // 移除旧的 toggle 样式逻辑
+        }
+
+        function updateHint() {
+            const hintDisplay = document.getElementById('input-hint');
+            const userInput = document.getElementById('user-input');
+            
+            if ((showHint || tempHint) && currentRoot) {
+                hintDisplay.textContent = currentRoot.code;
+                hintDisplay.classList.add('visible');
+                userInput.classList.add('hide-placeholder');
+                // userInput.classList.add('transparent-text'); // Remove transparent text to allow user to see their input
+            } else {
+                hintDisplay.classList.remove('visible');
+                userInput.classList.remove('hide-placeholder');
+                userInput.classList.remove('transparent-text');
+                // 延迟清空内容以配合淡出动画
+                setTimeout(() => {
+                    if (!showHint && !tempHint) hintDisplay.textContent = '';
+                }, 300);
+            }
+        }
+        
+        async function resetData() {
+            if(confirm('确定要清除所有进度和设置吗？')) {
+                await dbService.clear();
+                location.reload();
+            }
+        }
+
+        inputField.addEventListener('input', checkInput);
+        
+        inputField.addEventListener('keydown', (e) => {
+            if (e.key === ' ' && inputField.value === '') {
+                e.preventDefault();
+                showOneTimeHint();
+            }
+        });
+
+        // Initialize
+        initApp();
+    </script>
+</body>
+</html>

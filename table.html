@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>虎码字根表</title>
+    <style>
+        @font-face {
+            font-family: 'TumanPUA';
+            src: url('fonts/TumanPUA.ttf') format('truetype');
+        }
+
+        :root {
+            --primary-color: #6366f1; /* Indigo 500 */
+            --primary-hover: #4f46e5; /* Indigo 600 */
+            --bg-gradient-start: #e0e7ff; /* Indigo 100 */
+            --bg-gradient-end: #f3f4f6;   /* Gray 100 */
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --text-main: #111827; /* Gray 900 */
+            --text-sub: #6b7280;  /* Gray 500 */
+            --success-color: #10b981; /* Emerald 500 */
+            --error-color: #ef4444;   /* Red 500 */
+            --border-radius: 24px;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 2rem;
+            border-radius: 32px;
+            box-shadow: var(--shadow);
+            border: var(--glass-border);
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            width: 100%;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary-color), #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-sub);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.5);
+        }
+
+        .nav-link:hover {
+            background: white;
+            color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        .search-wrapper {
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid transparent;
+            border-radius: 16px;
+            background: white;
+            font-size: 1rem;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-sub);
+            pointer-events: none;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 1.2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            background: white;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .card-chars {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .card-main {
+            font-family: 'TumanPUA', sans-serif;
+            font-size: 3rem;
+            color: var(--text-main);
+            line-height: 1;
+        }
+
+        .card-variants {
+            font-family: 'TumanPUA', sans-serif;
+            font-size: 1.5rem;
+            color: var(--text-sub);
+            opacity: 0.8;
+            margin-left: 0.5rem;
+        }
+
+        .card-code {
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.3rem 0.8rem;
+            border-radius: 10px;
+            letter-spacing: 1px;
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-sub);
+            font-size: 1.1rem;
+        }
+
+        .loading {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .keyboard-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.5);
+            align-items: center;
+        }
+        
+        .keyboard-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-align: center;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .keyboard-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 1400px;
+            padding: 0;
+            margin: 0 auto;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .key-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            padding: 8px 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 0 1 9.5%;
+            min-height: 120px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            align-items: center;
+        }
+
+        .key-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            border-color: var(--primary-color);
+            z-index: 10;
+        }
+
+        .key-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            opacity: 0.5;
+            text-transform: uppercase;
+            align-self: flex-start;
+            margin-left: 6px;
+        }
+
+        .key-content {
+            margin-top: 2px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .mini-root-group {
+            display: inline-flex;
+            align-items: baseline;
+            justify-content: center;
+            padding: 2px 4px;
+            border-radius: 6px;
+            cursor: default;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid transparent;
+        }
+        
+        .mini-root-group:hover {
+            background: #ffffff;
+            transform: scale(1.15);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+            z-index: 5;
+        }
+
+        .mini-root-main {
+            font-family: 'TumanPUA', sans-serif;
+            font-size: 1.4rem;
+            color: var(--text-main);
+            line-height: 1;
+        }
+
+        .mini-root-variants {
+            font-family: 'TumanPUA', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-left: 2px;
+            line-height: 1;
+            opacity: 0.7;
+        }
+
+        .custom-tooltip {
+            position: fixed;
+            background: rgba(17, 24, 39, 0.95);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.15s ease, transform 0.1s ease;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transform: translate(-50%, 15px);
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .tooltip-chars {
+            font-family: 'TumanPUA', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        
+        .tooltip-main {
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .tooltip-variants {
+            color: #9ca3af;
+            font-size: 1.4rem;
+            margin-left: 4px;
+        }
+
+        .tooltip-code {
+            font-family: 'Monaco', 'Consolas', monospace;
+            color: #818cf8;
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: 0.05em;
+            background: rgba(99, 102, 241, 0.2);
+            padding: 2px 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <h1>虎码字根表</h1>
+                <a href="index.html" class="nav-link">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    返回练习
+                </a>
+            </div>
+            <div class="search-wrapper">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="search" placeholder="搜索字根或编码..." class="search-input">
+            </div>
+        </header>
+
+        <div id="grid" class="grid">
+            <div class="loading">正在加载数据...</div>
+        </div>
+
+        <div class="keyboard-section">
+            <h2 class="keyboard-title">键盘分区表</h2>
+            <div class="keyboard-container">
+                <div id="keyboard-view"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="tooltip" class="custom-tooltip"></div>
+
+    <script>
+        const grid = document.getElementById('grid');
+        const searchInput = document.getElementById('search');
+        let allRoots = [];
+
+        async function init() {
+            try {
+                const response = await fetch('data/虎码字根.txt');
+                if (!response.ok) throw new Error('Failed to load data');
+                const text = await response.text();
+                
+                parseData(text);
+                renderGrid(allRoots);
+                renderKeyboard(allRoots);
+                
+                searchInput.addEventListener('input', (e) => {
+                    const term = e.target.value.toLowerCase().trim();
+                    filterGrid(term);
+                });
+                
+            } catch (error) {
+                grid.innerHTML = `<div class="empty-state">加载失败: ${error.message}</div>`;
+            }
+        }
+
+        function parseData(text) {
+            const lines = text.split('\n');
+            allRoots = [];
+            
+            lines.forEach(line => {
+                const parts = line.trim().split(/\s+/);
+                if (parts.length >= 2) {
+                    const code = parts[parts.length - 1];
+                    const char = parts.slice(0, -1).join(' ');
+                    
+                    if (char && code) {
+                        allRoots.push({ char, code });
+                    }
+                }
+            });
+        }
+
+        function renderGrid(roots) {
+            if (roots.length === 0) {
+                grid.innerHTML = '<div class="empty-state">没有找到匹配的字根</div>';
+                return;
+            }
+
+            grid.innerHTML = roots.map(root => {
+                const chars = Array.from(root.char);
+                const main = chars[0];
+                const variants = chars.slice(1).join('');
+                
+                return `
+                    <div class="card">
+                        <div class="card-chars">
+                            <span class="card-main">${main}</span>
+                            ${variants ? `<span class="card-variants">${variants}</span>` : ''}
+                        </div>
+                        <div class="card-code">${root.code}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        const keyboardLayout = [
+            ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+            ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+            ['z', 'x', 'c', 'v', 'b', 'n', 'm']
+        ];
+
+        function renderKeyboard(roots) {
+            const groups = {};
+            keyboardLayout.flat().forEach(k => groups[k] = []);
+            
+            roots.forEach(root => {
+                if (!root.code) return;
+                const firstChar = root.code[0].toLowerCase();
+                if (groups[firstChar]) {
+                    groups[firstChar].push(root);
+                }
+            });
+
+            const html = keyboardLayout.map(row => {
+                return `<div class="keyboard-row">` + 
+                row.map(key => {
+                    const items = groups[key] || [];
+                    return `
+                        <div class="key-item">
+                            <div class="key-label">${key.toUpperCase()}</div>
+                            <div class="key-content">
+                                ${items.map(item => {
+                                    const chars = Array.from(item.char);
+                                    const main = chars[0];
+                                    const variants = chars.slice(1).join('');
+                                    return `
+                                        <div class="mini-root-group" data-char="${item.char}" data-code="${item.code}">
+                                            <span class="mini-root-main">${main}</span>
+                                            ${variants ? `<span class="mini-root-variants">${variants}</span>` : ''}
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    `;
+                }).join('') + 
+                `</div>`;
+            }).join('');
+            
+            document.getElementById('keyboard-view').innerHTML = html;
+        }
+
+        function filterGrid(term) {
+            if (!term) {
+                renderGrid(allRoots);
+                return;
+            }
+            
+            const filtered = allRoots.filter(root => {
+                return root.code.includes(term) || root.char.includes(term);
+            });
+            
+            renderGrid(filtered);
+        }
+
+        const tooltip = document.getElementById('tooltip');
+
+        document.addEventListener('mouseover', (e) => {
+            const target = e.target.closest('.mini-root-group');
+            if (target) {
+                const char = target.dataset.char;
+                const code = target.dataset.code;
+                
+                const chars = Array.from(char);
+                const main = chars[0];
+                const variants = chars.slice(1).join('');
+                
+                tooltip.innerHTML = `
+                    <div class="tooltip-chars">
+                        <span class="tooltip-main">${main}</span>
+                        ${variants ? `<span class="tooltip-variants">${variants}</span>` : ''}
+                    </div>
+                    <div class="tooltip-code">${code}</div>
+                `;
+                
+                // Initial positioning
+                const rect = target.getBoundingClientRect();
+                tooltip.style.left = rect.left + (rect.width / 2) + 'px';
+                tooltip.style.top = rect.top - 10 + 'px';
+                tooltip.style.transform = 'translate(-50%, -100%)';
+                
+                tooltip.style.opacity = '1';
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            const target = e.target.closest('.mini-root-group');
+            if (target) {
+                tooltip.style.opacity = '0';
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>
