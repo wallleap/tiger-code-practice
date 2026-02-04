@@ -202,7 +202,7 @@
 月 ⺝	vy
 乍	wa	[zhà]
 冫 ⺀	wb	[bīng]
-彳 亍	wc	[chì chù]
+彳 亍	wc	[chì_chù]
 宀 冖	wg
 龟	wg
 兔 	wt
