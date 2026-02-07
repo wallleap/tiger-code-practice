@@ -438,11 +438,20 @@
             lines.forEach(line => {
                 const parts = line.trim().split(/\s+/);
                 if (parts.length >= 2) {
-                    const code = parts[parts.length - 1];
-                    const char = parts.slice(0, -1).join(' ');
+                    let code, char, pinyin;
+                    const lastPart = parts[parts.length - 1];
+                    
+                    if (lastPart.startsWith('[') && lastPart.endsWith(']')) {
+                        pinyin = lastPart.slice(1, -1);
+                        code = parts[parts.length - 2];
+                        char = parts.slice(0, -2).join(' ');
+                    } else {
+                        code = lastPart;
+                        char = parts.slice(0, -1).join(' ');
+                    }
                     
                     if (char && code) {
-                        allRoots.push({ char, code });
+                        allRoots.push({ char, code, pinyin });
                     }
                 }
             });
