@@ -751,6 +751,9 @@
                     practiceQueue = session.practiceQueue;
                     currentRoot = session.currentRoot;
                     wrongRoots = session.wrongRoots || [];
+                    if (session.totalRoots) {
+                        totalRoots = session.totalRoots;
+                    }
                     
                     updateStats();
                     
@@ -841,6 +844,9 @@
                 // 重置时也重置提示状态（除非自动提示开启）
                 showHint = autoHint;
                 updateHintUI();
+
+                // Reset totalRoots to full list size
+                totalRoots = roots.length;
                 
                 nextRoot();
                 inputField.value = '';
@@ -854,6 +860,14 @@
                 if (wrongRoots.length > 0) {
                     showToast(`本轮结束，开始复习 ${wrongRoots.length} 个错误字根`);
                     practiceQueue = shuffle([...wrongRoots]);
+                    
+                    // Reset progress for review
+                    totalRoots = practiceQueue.length;
+                    
+                    // Reset stats for review
+                    stats = { correct: 0, wrong: 0 };
+                    updateStats();
+
                     wrongRoots = []; // Reset for next round
                     saveSession();
                     // Fall through to pop the first item from the new queue
@@ -946,7 +960,8 @@
                 stats,
                 practiceQueue,
                 currentRoot,
-                wrongRoots
+                wrongRoots,
+                totalRoots
             });
         }
         
