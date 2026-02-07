@@ -42,7 +42,7 @@
             background: var(--card-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            padding: 3.5rem 3rem;
+            padding: 2.5rem 2.5rem;
             border-radius: 32px;
             box-shadow: var(--shadow);
             border: var(--glass-border);
@@ -126,8 +126,8 @@
         .stat-card.error .stat-value { color: var(--error-color); }
 
         .root-display-container {
-            margin: 1rem 0 3rem;
-            height: 200px;
+            margin: 1rem 0 2rem;
+            height: 160px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -136,7 +136,7 @@
 
         .root-display {
             font-family: 'TumanPUA', sans-serif;
-            font-size: 10rem;
+            font-size: 8rem;
             color: var(--text-main);
             line-height: 1;
             transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -153,37 +153,37 @@
         }
 
         .root-main {
-            font-size: 10rem;
+            font-size: 8rem;
         }
 
         .root-variant {
-            font-size: 5rem;
+            font-size: 4rem;
             color: var(--text-sub);
-            margin-left: 1.5rem;
+            margin-left: 1.2rem;
             font-weight: 400;
             opacity: 0.6;
         }
 
         .root-pinyin {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: var(--primary-color);
-            margin-top: 1rem;
+            margin-top: 0.8rem;
             font-weight: 500;
             font-family: 'Inter', sans-serif;
-            min-height: 3rem; /* Keep space even if empty */
+            min-height: 2.5rem; /* Keep space even if empty */
         }
 
         .input-wrapper {
             position: relative;
             width: 100%;
-            max-width: 260px;
+            max-width: 240px;
             margin-bottom: 1rem;
         }
 
         input[type="text"] {
             width: 100%;
-            font-size: 2.5rem;
-            padding: 0.75rem 0;
+            font-size: 2rem;
+            padding: 0.6rem 0;
             text-align: center; /* 默认居中，但在有提示时需要特别处理，这里我们统一改为左对齐配合 padding */
             text-align: left;
             padding-left: 20%; /* 通过 padding 来实现视觉居中 */
@@ -234,7 +234,7 @@
             transform: translateY(-50%);
             color: var(--text-sub);
             font-weight: 600;
-            font-size: 2.5rem;
+            font-size: 2rem;
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.3s ease;
@@ -424,9 +424,106 @@
         .hidden {
             display: none !important;
         }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            z-index: 1000;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .toast.visible {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 640px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 2rem 1.5rem;
+                border-radius: 24px;
+            }
+
+            header {
+                margin-bottom: 1.5rem;
+                gap: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .root-display-container {
+                height: 140px;
+                margin: 0.5rem 0 2rem;
+            }
+
+            .root-main {
+                font-size: 6rem;
+            }
+
+            .root-variant {
+                font-size: 3rem;
+                margin-left: 0.8rem;
+            }
+
+            .root-pinyin {
+                font-size: 1.5rem;
+                margin-top: 0.5rem;
+                min-height: 2rem;
+            }
+
+            .input-wrapper {
+                max-width: 200px;
+            }
+
+            input[type="text"], .input-hint {
+                font-size: 2rem;
+                padding: 0.5rem 0;
+                padding-left: 20%;
+            }
+
+            .stats-grid {
+                gap: 0.5rem;
+            }
+            
+            .stat-card {
+                padding: 0.5rem;
+            }
+
+            .stat-value {
+                font-size: 1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.8rem;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+                padding: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
+    <div id="toast" class="toast"></div>
     <div class="container">
         <div class="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
@@ -569,6 +666,7 @@
         let showHint = false;
         let autoHint = false;
         let practiceQueue = [];
+        let wrongRoots = []; // Store wrong roots for review
         let totalRoots = 0;
         let hasErroredOnCurrent = false;
         let tempHint = false;
@@ -584,6 +682,17 @@
         const loadingOverlay = document.getElementById('loading-overlay');
         const randomModeCheckbox = document.getElementById('random-mode');
         const autoHintCheckbox = document.getElementById('auto-hint');
+        const toastEl = document.getElementById('toast');
+        let toastTimeout;
+
+        function showToast(message, duration = 3000) {
+            toastEl.textContent = message;
+            toastEl.classList.add('visible');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toastEl.classList.remove('visible');
+            }, duration);
+        }
 
         function updateRootDisplayContent(root) {
             if (!root || !root.char) return;
@@ -641,9 +750,7 @@
                     stats = session.stats || { correct: 0, wrong: 0 };
                     practiceQueue = session.practiceQueue;
                     currentRoot = session.currentRoot;
-                    // 确保 totalRoots 正确，如果 session 里有就用，没有就用 roots.length
-                    // 但实际上 totalRoots 应该是原始数据的长度，用于计算进度
-                    // 如果我们恢复了队列，totalRoots 应该保持不变（即所有字根的数量）
+                    wrongRoots = session.wrongRoots || [];
                     
                     updateStats();
                     
@@ -722,6 +829,8 @@
                 stats = { correct: 0, wrong: 0 };
                 updateStats();
                 
+                wrongRoots = []; // Reset wrong roots
+
                 if (randomModeCheckbox.checked) {
                     practiceQueue = shuffle([...roots]);
                 } else {
@@ -742,15 +851,23 @@
 
         function nextRoot() {
             if (practiceQueue.length === 0) {
-                rootDisplay.textContent = "🎉";
-                hintDisplay.textContent = "练习完成！";
-                hintDisplay.classList.add('visible');
-                inputField.disabled = true;
-                progressBar.style.width = '100%';
-                
-                // 清除 session
-                dbService.save('session', null);
-                return;
+                if (wrongRoots.length > 0) {
+                    showToast(`本轮结束，开始复习 ${wrongRoots.length} 个错误字根`);
+                    practiceQueue = shuffle([...wrongRoots]);
+                    wrongRoots = []; // Reset for next round
+                    saveSession();
+                    // Fall through to pop the first item from the new queue
+                } else {
+                    rootDisplay.textContent = "🎉";
+                    hintDisplay.textContent = "练习完成！";
+                    hintDisplay.classList.add('visible');
+                    inputField.disabled = true;
+                    progressBar.style.width = '100%';
+                    
+                    // 清除 session
+                    dbService.save('session', null);
+                    return;
+                }
             }
 
             currentRoot = practiceQueue.pop();
@@ -803,6 +920,11 @@
                     if (!hasErroredOnCurrent) {
                         stats.wrong++;
                         hasErroredOnCurrent = true;
+                        
+                        // Add to wrongRoots if not present
+                        const isRecorded = wrongRoots.some(r => r.code === currentRoot.code && r.char === currentRoot.char);
+                        if (!isRecorded) wrongRoots.push(currentRoot);
+                        
                         updateStats();
                         saveSession(); // 错误数改变也保存一下
                     }
@@ -823,7 +945,8 @@
             dbService.save('session', {
                 stats,
                 practiceQueue,
-                currentRoot
+                currentRoot,
+                wrongRoots
             });
         }
         
