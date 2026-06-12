@@ -181,6 +181,10 @@
                 border-color: var(--primary-color);
             }
 
+            .card-pinyin {
+                color: var(--primary-color);
+            }
+
             .card-chars {
                 display: flex;
                 align-items: baseline;
@@ -374,6 +378,11 @@
                 min-width: 80px;
             }
 
+            .tooltip-pinyin {
+                font-size: 1.2rem;
+                color: #818cf8;
+            }
+
             .tooltip-chars {
                 font-family: "TumanPUA", sans-serif;
                 font-size: 1.8rem;
@@ -530,9 +539,13 @@
                         const chars = Array.from(root.char);
                         const main = chars[0];
                         const variants = chars.slice(1).join("");
+                        const pinyin = root.pinyin;
 
                         return `
                     <div class="card">
+                        <div class="card-pinyin">
+                            ${pinyin !== undefined ? pinyin : ""}
+                        </div>
                         <div class="card-chars">
                             <span class="card-main">${main}</span>
                             ${variants ? `<span class="card-variants">${variants}</span>` : ""}
@@ -581,7 +594,7 @@
                                             .slice(1)
                                             .join("");
                                         return `
-                                        <div class="mini-root-group" data-char="${item.char}" data-code="${item.code}">
+                                        <div class="mini-root-group" data-pinyin="${item.pinyin}" data-char="${item.char}" data-code="${item.code}">
                                             <span class="mini-root-main">${main}</span>
                                             ${variants ? `<span class="mini-root-variants">${variants}</span>` : ""}
                                         </div>
@@ -625,8 +638,10 @@
                     const chars = Array.from(char);
                     const main = chars[0];
                     const variants = chars.slice(1).join("");
+                    const pinyin = target.dataset.pinyin;
 
                     tooltip.innerHTML = `
+                    <span class="tooltip-pinyin">${pinyin === "undefined" ? "" : pinyin}</span>
                     <div class="tooltip-chars">
                         <span class="tooltip-main">${main}</span>
                         ${variants ? `<span class="tooltip-variants">${variants}</span>` : ""}
