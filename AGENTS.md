@@ -18,8 +18,8 @@
 
 ## Architecture
 
-- `index.html`：练习页。核心流程 `initApp()` → `parseData()` → `nextRoot()`/`checkInput()`；答错进 `wrongRoots`，一轮结束自动复习错题；空格键一次性提示。
-- `dbService`（index.html 内联）：IndexedDB 封装，库 `ZhmnPracticeDB`（version 1），store `app_data`，键 `session`（进度）和 `settings`（随机模式/自动提示）。
+- `index.html`：练习页，支持**字根练习 / 单字练习**两种模式（`DATA_FILES` 映射数据源，`switchMode()` 切换并清旧进度）。核心流程 `initApp()` → `loadData()` → `parseData()` → `nextRoot()`/`checkInput()`；答错进 `wrongRoots`，一轮结束自动复习错题；空格键一次性提示。单字编码（`data/单字编码.txt`）形如 `的\tu_`，`checkInput` 中结尾 `_`（补码占位）可省略输入。
+- `dbService`（index.html 内联）：IndexedDB 封装，库 `ZhmnPracticeDB`（version 1），store `app_data`。键 `settings`（全局：当前模式 `mode`）与 `settings:{mode}`（各模式的乱序/提示设置，`applyModeSettings()` 应用）、`session:{mode}`（各模式进度分 key 独立存储，切换模式不丢进度；`switchMode()` 先存当前进度再恢复目标进度）。
 - `table.html`：字根表页，`renderGrid()`（列表）+ `renderKeyboard()`（按编码首字母分组）+ `filterGrid()` 搜索。
 - `parseData()`（两个页面各有一份，保持同步修改）：按空白拆分行，末段形如 `[拼音]` 则识别为拼音，其余为 `字根(含变体)` + `编码`。
 - `server.js`：极简静态服务器，MIME 表 + 404 兜底；`scrape_radicals.js`：抓取 tiger-code.com 对比表生成数据。
@@ -27,7 +27,7 @@
 ## Conventions
 
 - 字根数据格式：`字根(含变体) 编码 [拼音]`，空白/制表符分隔，**两页的 `parseData` 依赖此格式**——改数据文件时保持兼容。
-- 单字编码格式：`文字	编码`，其中编码全码为4码（例 `tjkf`），不足4码的后面加 `_`，实际输入时可忽略。
+- 单字编码格式：`文字	编码`，其中编码全码为4码（例 `tjkf`），不足4码的后面加 `_`，实际输入时可忽略，编码末尾的数字可忽略。
 - 页面用 inline `<script>`/`<style>`，2 空格缩进，单引号，中文注释与中文 UI 文案。
 - 处理汉字/变体用 `Array.from()` 按 Unicode 码点切分（见 `updateRootDisplayContent`），不要用索引下标。
 - 字体和 CSS 变量（`--primary-color` 等 indigo 玻璃拟态主题）集中定义在 `<style>` 头部。

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>虎码字根练习</title>
+    <title>虎码练习</title>
     <style>
       @font-face {
         font-family: "TumanPUA";
@@ -98,6 +98,137 @@
         -webkit-text-fill-color: transparent;
         margin: 0;
         letter-spacing: -0.025em;
+      }
+
+      .title-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      /* 自定义下拉选择（练习模式） */
+      .mode-select {
+        position: relative;
+      }
+
+      .mode-select-trigger {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-family: inherit;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-main);
+        background-color: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 0.45rem 0.9rem;
+        cursor: pointer;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      .mode-select-trigger:hover {
+        border-color: #d1d5db;
+      }
+
+      .mode-select-trigger.open,
+      .mode-select-trigger:focus-visible {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+      }
+
+      .mode-select-arrow {
+        width: 14px;
+        height: 14px;
+        stroke: #9ca3af;
+        transition: transform 0.2s ease;
+      }
+
+      .mode-select-trigger.open .mode-select-arrow {
+        transform: rotate(180deg);
+      }
+
+      .mode-select-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 50%;
+        transform: translateX(-50%);
+        min-width: 100%;
+        white-space: nowrap;
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        box-shadow:
+          0 10px 25px -5px rgba(0, 0, 0, 0.1),
+          0 4px 10px -4px rgba(0, 0, 0, 0.05);
+        padding: 0.35rem;
+        display: flex;
+        flex-direction: column;
+        z-index: 30;
+      }
+
+      .mode-select-menu[hidden] {
+        display: none;
+      }
+
+      .mode-select-option {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-family: inherit;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-main);
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 0.9rem;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .mode-select-option:hover {
+        background: #f3f4f6;
+      }
+
+      .mode-select-option.selected {
+        color: var(--primary-color);
+        background: #eef2ff;
+      }
+
+      .mode-select-option-icon {
+        width: 14px;
+        height: 14px;
+        stroke: #9ca3af;
+        flex-shrink: 0;
+      }
+
+      .mode-select-option.selected .mode-select-option-icon {
+        stroke: var(--primary-color);
+      }
+
+      .mode-select-option-label {
+        flex: 1;
+      }
+
+      .mode-select-option-check {
+        width: 14px;
+        height: 14px;
+        stroke: var(--primary-color);
+        flex-shrink: 0;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+      }
+
+      .mode-select-option.selected .mode-select-option-check {
+        opacity: 1;
       }
 
       .stats-grid {
@@ -588,11 +719,105 @@
 
       <div id="loading-overlay" class="loading">
         <div class="spinner"></div>
-        <div>正在加载字根数据...</div>
+        <div>正在加载数据...</div>
       </div>
 
       <header>
-        <h1>虎码字根</h1>
+        <div class="title-row">
+          <h1>虎码练习</h1>
+          <div class="mode-select" id="mode-select">
+            <button
+              type="button"
+              class="mode-select-trigger"
+              id="mode-select-trigger"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              title="选择练习模式"
+            >
+              <span id="mode-select-label">字根练习</span>
+              <svg
+                class="mode-select-arrow"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div
+              class="mode-select-menu"
+              id="mode-select-menu"
+              role="listbox"
+              hidden
+            >
+              <button
+                type="button"
+                class="mode-select-option selected"
+                data-mode="radical"
+                role="option"
+                aria-selected="true"
+              >
+                <svg
+                  class="mode-select-option-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="3" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="3" width="7" height="7"></rect>
+                  <rect x="14" y="14" width="7" height="7"></rect>
+                  <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span class="mode-select-option-label">字根练习</span>
+                <svg
+                  class="mode-select-option-check"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </button>
+              <button
+                type="button"
+                class="mode-select-option"
+                data-mode="char"
+                role="option"
+                aria-selected="false"
+              >
+                <svg
+                  class="mode-select-option-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="4 7 4 4 20 4 20 7"></polyline>
+                  <line x1="9" y1="20" x2="15" y2="20"></line>
+                  <line x1="12" y1="4" x2="12" y2="20"></line>
+                </svg>
+                <span class="mode-select-option-label">单字练习</span>
+                <svg
+                  class="mode-select-option-check"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
         <div class="stats-grid">
           <div class="stat-card progress">
             <span class="stat-label">进度</span>
@@ -824,8 +1049,15 @@
         },
       };
 
+      // 练习模式对应的数据文件
+      const DATA_FILES = {
+        radical: "data/虎码字根.txt",
+        char: "data/单字编码.txt",
+      };
+
       let roots = [];
       let currentRoot = null;
+      let currentMode = "radical";
       let stats = { correct: 0, wrong: 0 };
       let showHint = false;
       let autoHint = false;
@@ -846,6 +1078,38 @@
       const loadingOverlay = document.getElementById("loading-overlay");
       const randomModeCheckbox = document.getElementById("random-mode");
       const autoHintCheckbox = document.getElementById("auto-hint");
+      const modeSelectEl = document.getElementById("mode-select");
+      const modeSelectTrigger = document.getElementById("mode-select-trigger");
+      const modeSelectLabel = document.getElementById("mode-select-label");
+      const modeSelectMenu = document.getElementById("mode-select-menu");
+      const modeOptions = [
+        ...document.querySelectorAll(".mode-select-option"),
+      ];
+
+      // ---- 自定义下拉（练习模式）----
+      const MODE_LABELS = { radical: "字根练习", char: "单字练习" };
+
+      function setModeSelectUI(mode) {
+        modeSelectLabel.textContent = MODE_LABELS[mode] || mode;
+        modeOptions.forEach((opt) => {
+          const selected = opt.dataset.mode === mode;
+          opt.classList.toggle("selected", selected);
+          opt.setAttribute("aria-selected", String(selected));
+        });
+      }
+
+      function closeModeMenu() {
+        modeSelectMenu.hidden = true;
+        modeSelectTrigger.classList.remove("open");
+        modeSelectTrigger.setAttribute("aria-expanded", "false");
+      }
+
+      function toggleModeMenu() {
+        const open = modeSelectMenu.hidden;
+        modeSelectMenu.hidden = !open;
+        modeSelectTrigger.classList.toggle("open", open);
+        modeSelectTrigger.setAttribute("aria-expanded", String(open));
+      }
       const toastEl = document.getElementById("toast");
       let toastTimeout;
 
@@ -887,53 +1151,45 @@
         try {
           await dbService.init();
 
-          // 加载设置
-          const settings = await dbService.get("settings");
-          if (settings) {
-            randomModeCheckbox.checked = settings.randomMode;
-            autoHintCheckbox.checked = settings.autoHint;
-            autoHint = settings.autoHint;
-            if (autoHint) showHint = true;
-            updateHintUI();
+          // 迁移旧版单 session 存储（旧 session 带 mode 字段）
+          const legacySession = await dbService.get("session");
+          if (legacySession) {
+            const legacyMode = legacySession.mode || "radical";
+            if (!(await dbService.get(`session:${legacyMode}`))) {
+              await dbService.save(`session:${legacyMode}`, legacySession);
+            }
+            await dbService.save("session", null);
           }
 
-          // 初始化 Chip 状态
+          // 加载设置：全局只存当前模式，乱序/提示按模式分存
+          const settings = await dbService.get("settings");
+          if (settings) {
+            currentMode = settings.mode || "radical";
+            // 旧版设置迁移（旧 settings 直接带 randomMode/autoHint）
+            if (settings.randomMode !== undefined) {
+              await dbService.save(`settings:${currentMode}`, {
+                randomMode: settings.randomMode,
+                autoHint: settings.autoHint,
+              });
+            }
+          }
+          await applyModeSettings(currentMode);
+          setModeSelectUI(currentMode);
           updateChipState(randomModeCheckbox);
           updateChipState(autoHintCheckbox);
 
           // 加载数据
-          const response = await fetch("data/虎码字根.txt");
-          if (!response.ok) throw new Error("Network response was not ok");
-          const text = await response.text();
-          parseData(text);
+          await loadData(currentMode);
 
-          // 尝试恢复进度
-          const session = await dbService.get("session");
+          // 尝试恢复当前模式的进度
+          const session = await dbService.get(`session:${currentMode}`);
           if (
             session &&
             session.practiceQueue &&
             session.practiceQueue.length > 0
           ) {
             console.log("Restoring session...");
-            stats = session.stats || { correct: 0, wrong: 0 };
-            practiceQueue = session.practiceQueue;
-            currentRoot = session.currentRoot;
-            wrongRoots = session.wrongRoots || [];
-            if (session.totalRoots) {
-              totalRoots = session.totalRoots;
-            }
-
-            updateStats();
-
-            if (currentRoot) {
-              updateRootDisplayContent(currentRoot);
-              rootDisplay.classList.remove("animate-pop"); // 恢复时不播放动画，或者播放也行
-              updateHint();
-              updateProgress();
-            } else {
-              nextRoot(); // 如果只有队列没有当前字，取下一个
-            }
-
+            restoreSession(session);
             loadingOverlay.classList.add("hidden");
           } else {
             loadingOverlay.classList.add("hidden");
@@ -943,6 +1199,51 @@
           loadingOverlay.textContent = "初始化失败";
           console.error(error);
         }
+      }
+
+      // 应用某模式的乱序/提示设置到界面（无存档时用默认值：乱序开、提示关）
+      async function applyModeSettings(mode) {
+        const modeSettings = await dbService.get(`settings:${mode}`);
+        randomModeCheckbox.checked = modeSettings
+          ? !!modeSettings.randomMode
+          : true;
+        autoHintCheckbox.checked = modeSettings
+          ? !!modeSettings.autoHint
+          : false;
+        autoHint = autoHintCheckbox.checked;
+        showHint = autoHint;
+        updateChipState(randomModeCheckbox);
+        updateChipState(autoHintCheckbox);
+        updateHintUI();
+      }
+
+      // 恢复某个模式的练习进度（含统计、队列、当前字）
+      function restoreSession(session) {
+        stats = session.stats || { correct: 0, wrong: 0 };
+        practiceQueue = session.practiceQueue;
+        currentRoot = session.currentRoot;
+        wrongRoots = session.wrongRoots || [];
+        if (session.totalRoots) {
+          totalRoots = session.totalRoots;
+        }
+
+        updateStats();
+
+        if (currentRoot) {
+          updateRootDisplayContent(currentRoot);
+          rootDisplay.classList.remove("animate-pop"); // 恢复时不播放动画
+          updateHint();
+          updateProgress();
+        } else {
+          nextRoot(); // 如果只有队列没有当前字，取下一个
+        }
+      }
+
+      async function loadData(mode) {
+        const response = await fetch(DATA_FILES[mode]);
+        if (!response.ok) throw new Error("Network response was not ok");
+        const text = await response.text();
+        parseData(text);
       }
 
       function parseData(text) {
@@ -989,6 +1290,44 @@
           label.classList.add("active");
         } else {
           label.classList.remove("active");
+        }
+      }
+
+      // 切换练习模式（字根/单字），两个模式各自保留进度
+      async function switchMode(mode) {
+        if (mode === currentMode) return;
+
+        loadingOverlay.classList.remove("hidden");
+        try {
+          // 先保存当前模式的进度与设置
+          saveSession();
+          saveSettings();
+          await loadData(mode);
+          currentMode = mode;
+          // 应用目标模式的乱序/提示设置
+          await applyModeSettings(currentMode);
+          // 更新全局模式选择并保存目标模式设置
+          saveSettings();
+          loadingOverlay.classList.add("hidden");
+
+          // 恢复目标模式的进度；无进度则从头开始
+          const session = await dbService.get(`session:${currentMode}`);
+          if (
+            session &&
+            session.practiceQueue &&
+            session.practiceQueue.length > 0
+          ) {
+            console.log("Restoring session...");
+            restoreSession(session);
+          } else {
+            restart(true);
+          }
+        } catch (error) {
+          loadingOverlay.classList.add("hidden");
+          showToast("数据加载失败");
+          console.error(error);
+          // 恢复 select 显示为当前模式
+          setModeSelectUI(currentMode);
         }
       }
 
@@ -1046,7 +1385,7 @@
             progressBar.style.width = "100%";
 
             // 清除 session
-            dbService.save("session", null);
+            dbService.save(`session:${currentMode}`, null);
             return;
           }
         }
@@ -1079,8 +1418,17 @@
 
         resetInputState();
 
-        // 完全匹配
-        if (input === currentRoot.code) {
+        // 去掉编码末尾的可忽略后缀："_"（补码占位）与末尾数字（单字编码：全码4码，不足补 _，末尾数字可忽略）
+        function stripOptionalSuffix(code) {
+          return code.replace(/[_\d]+$/, "");
+        }
+
+        // 完全匹配（可省略结尾的 "_" 与末尾数字，如 `u_` 输入 `u`、`bks2` 输入 `bks`）
+        const isExactMatch =
+          input === currentRoot.code ||
+          input === stripOptionalSuffix(currentRoot.code);
+
+        if (isExactMatch) {
           if (!hasErroredOnCurrent) {
             stats.correct++;
           }
@@ -1126,7 +1474,7 @@
       }
 
       function saveSession() {
-        dbService.save("session", {
+        dbService.save(`session:${currentMode}`, {
           stats,
           practiceQueue,
           currentRoot,
@@ -1136,7 +1484,8 @@
       }
 
       function saveSettings() {
-        dbService.save("settings", {
+        dbService.save("settings", { mode: currentMode });
+        dbService.save(`settings:${currentMode}`, {
           randomMode: randomModeCheckbox.checked,
           autoHint: autoHintCheckbox.checked,
         });
@@ -1221,6 +1570,32 @@
           e.preventDefault();
           showOneTimeHint();
         }
+      });
+
+      // 自定义下拉交互
+      modeSelectTrigger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleModeMenu();
+      });
+
+      modeOptions.forEach((opt) => {
+        opt.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const mode = opt.dataset.mode;
+          if (mode !== currentMode) {
+            setModeSelectUI(mode); // 乐观更新，switchMode 失败时回滚
+            switchMode(mode);
+          }
+          closeModeMenu();
+        });
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!modeSelectEl.contains(e.target)) closeModeMenu();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModeMenu();
       });
 
       // Initialize
