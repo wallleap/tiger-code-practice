@@ -10,6 +10,11 @@
         src: url("fonts/TumanPUA.ttf") format("truetype");
       }
 
+      @font-face {
+        font-family: "PingFangMod";
+        src: url("fonts/PingFang-Mod.otf") format("truetype");
+      }
+
       :root {
         --primary-color: #6366f1; /* Indigo 500 */
         --primary-hover: #4f46e5; /* Indigo 600 */
@@ -155,7 +160,7 @@
       }
 
       .root-display {
-        font-family: "TumanPUA", sans-serif;
+        font-family: "TumanPUA", "PingFang SC", "PingFangMod", sans-serif;
         font-size: 8rem;
         color: var(--text-main);
         line-height: 1;
