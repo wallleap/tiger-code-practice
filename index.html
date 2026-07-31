@@ -633,6 +633,108 @@
         transform: translateX(-50%) translateY(0);
       }
 
+      /* 清除数据 Modal */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(17, 24, 39, 0.4);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
+        padding: 20px;
+      }
+
+      .modal {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.25);
+        padding: 1.75rem;
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .modal h2 {
+        margin: 0 0 0.25rem;
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+
+      .modal-desc {
+        margin: 0 0 1.25rem;
+        color: var(--text-sub);
+        font-size: 0.9rem;
+      }
+
+      .clear-option {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        margin-bottom: 0.6rem;
+        cursor: pointer;
+        transition:
+          border-color 0.15s ease,
+          background 0.15s ease;
+      }
+
+      .clear-option:hover {
+        border-color: #d1d5db;
+        background: #f9fafb;
+      }
+
+      .clear-option:has(input:checked) {
+        border-color: var(--primary-color);
+        background: #eef2ff;
+      }
+
+      .clear-option-head {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      .clear-option-head input {
+        accent-color: var(--primary-color);
+        margin: 0;
+        width: 15px;
+        height: 15px;
+      }
+
+      .clear-option-desc {
+        font-size: 0.8rem;
+        color: var(--text-sub);
+        padding-left: 1.55rem;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+      }
+
+      .modal-actions button {
+        flex: 1;
+        justify-content: center;
+      }
+
+      button.danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: #fff;
+        border: none;
+        box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+      }
+
+      button.danger:hover {
+        box-shadow: 0 6px 10px -1px rgba(239, 68, 68, 0.4);
+      }
+
       /* Mobile Optimization */
       @media (max-width: 640px) {
         body {
@@ -706,6 +808,15 @@
           width: 100%;
           justify-content: center;
           padding: 0.8rem;
+        }
+
+        .modal-actions {
+          flex-direction: row;
+        }
+
+        .modal-actions button {
+          width: auto;
+          padding: 0.75rem 1.5rem;
         }
       }
     </style>
@@ -949,8 +1060,8 @@
           </button>
           <button
             class="danger-text"
-            onclick="resetData()"
-            title="清除保存的进度和设置"
+            onclick="openClearModal()"
+            title="清除进度或设置"
           >
             <svg
               width="18"
@@ -968,6 +1079,56 @@
               ></path>
             </svg>
             清除数据
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 清除数据 Modal -->
+    <div id="clear-modal" class="modal-overlay hidden">
+      <div class="modal">
+        <h2>清除数据</h2>
+        <p class="modal-desc">选择要清除的内容：</p>
+        <label class="clear-option">
+          <span class="clear-option-head">
+            <input
+              type="radio"
+              name="clear-scope"
+              value="current"
+              checked
+            />
+            <span id="clear-current-title">当前模式进度</span>
+          </span>
+          <span class="clear-option-desc"
+            >只清除当前练习模式的进度和错题记录</span
+          >
+        </label>
+        <label class="clear-option">
+          <span class="clear-option-head">
+            <input
+              type="radio"
+              name="clear-scope"
+              value="all-sessions"
+            />
+            <span>所有模式进度</span>
+          </span>
+          <span class="clear-option-desc"
+            >清除字根练习和单字练习的进度，保留设置</span
+          >
+        </label>
+        <label class="clear-option">
+          <span class="clear-option-head">
+            <input type="radio" name="clear-scope" value="everything" />
+            <span>全部数据</span>
+          </span>
+          <span class="clear-option-desc"
+            >清除所有进度和设置，恢复初始状态</span
+          >
+        </label>
+        <div class="modal-actions">
+          <button type="button" id="clear-cancel">取消</button>
+          <button type="button" id="clear-confirm" class="danger">
+            确认清除
           </button>
         </div>
       </div>
@@ -1556,12 +1717,54 @@
         }
       }
 
-      async function resetData() {
-        if (confirm("确定要清除所有进度和设置吗？")) {
+      // ---- 清除数据 Modal ----
+      const clearModal = document.getElementById("clear-modal");
+      const clearCurrentTitle = document.getElementById("clear-current-title");
+      const clearCancelBtn = document.getElementById("clear-cancel");
+      const clearConfirmBtn = document.getElementById("clear-confirm");
+
+      function openClearModal() {
+        clearCurrentTitle.textContent = `当前模式进度（${MODE_LABELS[currentMode]}）`;
+        const currentRadio = document.querySelector(
+          'input[name="clear-scope"][value="current"]',
+        );
+        if (currentRadio) currentRadio.checked = true;
+        clearModal.classList.remove("hidden");
+        inputField.blur();
+      }
+
+      function closeClearModal() {
+        clearModal.classList.add("hidden");
+      }
+
+      async function confirmClear() {
+        const scope = document.querySelector(
+          'input[name="clear-scope"]:checked',
+        ).value;
+
+        if (scope === "current") {
+          // 只清当前模式进度，原地重开
+          await dbService.save(`session:${currentMode}`, null);
+          closeClearModal();
+          restart(true);
+          showToast("已清除当前模式进度");
+        } else if (scope === "all-sessions") {
+          // 清所有模式进度，保留设置
+          await dbService.save("session:radical", null);
+          await dbService.save("session:char", null);
+          location.reload();
+        } else {
+          // 全部数据（进度 + 设置）
           await dbService.clear();
           location.reload();
         }
       }
+
+      clearCancelBtn.addEventListener("click", closeClearModal);
+      clearConfirmBtn.addEventListener("click", confirmClear);
+      clearModal.addEventListener("click", (e) => {
+        if (e.target === clearModal) closeClearModal();
+      });
 
       inputField.addEventListener("input", checkInput);
 
