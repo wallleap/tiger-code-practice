@@ -136,6 +136,50 @@ body {
   transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.cache-indicator {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(17, 24, 39, 0.88);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.cache-indicator.visible {
+  opacity: 1;
+}
+
+.cache-indicator .bar {
+  width: 90px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.cache-indicator .bar-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.cache-indicator.done {
+  background: rgba(16, 185, 129, 0.9);
+}
+
 h1 {
   margin: 0;
   text-align: center;

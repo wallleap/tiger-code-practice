@@ -225,6 +225,10 @@
     <a class="nav-link" href="table.html">字根表</a>
     <a class="nav-link active" href="split.html">拆分查询</a>
   </nav>
+  <div id="cache-indicator" class="cache-indicator">
+    <span id="cache-indicator-text">正在缓存资源</span>
+    <span class="bar"><span class="bar-fill" id="cache-indicator-bar"></span></span>
+  </div>
   <main class="container">
     <div class="content">
       <div class="progress-container">
@@ -422,7 +426,54 @@
 
     // 注册 Service Worker 缓存字体与数据
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
+      navigator.serviceWorker.register('sw.js').then(sendPrecacheWhenIdle);
+      setupCacheProgress();
+    }
+
+    function setupCacheProgress() {
+      const el = document.getElementById('cache-indicator');
+      const textEl = document.getElementById('cache-indicator-text');
+      const barEl = document.getElementById('cache-indicator-bar');
+      let doneTimer;
+      const hide = () => {
+        el.classList.remove('visible');
+        el.classList.remove('done');
+      };
+      navigator.serviceWorker.addEventListener('message', (e) => {
+        const d = e.data;
+        if (!d || d.type !== 'PRECACHE_PROGRESS') return;
+        const pct = d.total ? Math.round((d.done / d.total) * 100) : 100;
+        barEl.style.width = pct + '%';
+        if (d.done >= d.total) {
+          textEl.textContent = d.failed ? `缓存完成（${d.failed} 项跳过）` : '缓存完成';
+          el.classList.add('done');
+          clearTimeout(doneTimer);
+          doneTimer = setTimeout(hide, 3000);
+        } else {
+          el.classList.remove('done');
+          textEl.textContent = `正在缓存资源 ${d.done}/${d.total}`;
+          el.classList.add('visible');
+        }
+      });
+    }
+
+    function sendPrecacheWhenIdle() {
+      const send = () => {
+        const controller = navigator.serviceWorker.controller;
+        if (controller) {
+          controller.postMessage({type: 'PRECACHE'});
+        } else {
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            const c = navigator.serviceWorker.controller;
+            if (c) c.postMessage({type: 'PRECACHE'});
+          }, {once: true});
+        }
+      };
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(send, {timeout: 20000});
+      } else {
+        setTimeout(send, 5000);
+      }
     }
   </script>
 </body>
