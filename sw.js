@@ -21,7 +21,9 @@ self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
   if (req.headers.get('range')) return;
-  const path = new URL(req.url).pathname;
+  const url = new URL(req.url);
+  if (url.origin !== self.location.origin) return;
+  const path = url.pathname;
 
   if (path.includes('/fonts/') || /\.(ttf|otf|woff2?)$/.test(path)) {
     e.respondWith(cacheFirst(req, FONT_CACHE));
