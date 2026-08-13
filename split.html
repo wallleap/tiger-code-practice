@@ -67,8 +67,95 @@
       box-shadow: 0 0 0 3px rgba(99, 102, 241, .15);
     }
 
-    .summary {
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
       margin: 1.25rem 0 .75rem;
+    }
+
+    .filters {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+
+    .filter-chip {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      padding: .4rem .7rem;
+      border-radius: 999px;
+      color: var(--text-sub);
+      font-size: .85rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+      background: rgba(255, 255, 255, .6);
+      transition: color .15s, background .15s;
+    }
+
+    .filter-chip:hover {
+      background: #fff;
+      color: var(--primary-color);
+    }
+
+    .filter-chip input {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .filter-chip .box {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 17px;
+      height: 17px;
+      border-radius: 5px;
+      border: 2px solid #cbd5e1;
+      background: #fff;
+      transition: border-color .15s, background .15s, box-shadow .15s;
+    }
+
+    .filter-chip:hover .box,
+    .filter-chip input:focus-visible + .box {
+      border-color: var(--primary-color);
+    }
+
+    .filter-chip input:checked + .box {
+      border-color: var(--primary-color);
+      background: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .15);
+    }
+
+    .filter-chip .box::after {
+      content: '';
+      width: 8px;
+      height: 4px;
+      border-left: 2px solid transparent;
+      border-bottom: 2px solid transparent;
+      transform: rotate(-45deg) translateY(-1px);
+      transition: border-color .15s;
+    }
+
+    .filter-chip input:checked + .box::after {
+      border-color: #fff;
+    }
+
+    .chip-example {
+      font-style: normal;
+      font-size: .72rem;
+      opacity: .55;
+    }
+
+    .summary {
       color: var(--text-sub);
       font-size: .9rem;
     }
@@ -239,7 +326,36 @@
       </header>
       <p class="hint">输入文字，查看每个字的拼音及虎码、五笔（86/98/新世纪）拆分。</p>
       <textarea id="query" placeholder="例如：你好，世界" autofocus></textarea>
-      <p id="summary" class="summary">正在加载数据...</p>
+      <div class="toolbar">
+        <div class="filters">
+          <label class="filter-chip">
+            <input type="checkbox" id="filter-punct" checked />
+            <span class="box" aria-hidden="true"></span>
+            <span>过滤标点/特殊符号</span>
+          </label>
+          <label class="filter-chip">
+            <input type="checkbox" id="filter-digit" checked />
+            <span class="box" aria-hidden="true"></span>
+            <span>过滤数字</span>
+          </label>
+          <label class="filter-chip">
+            <input type="checkbox" id="filter-letter" checked />
+            <span class="box" aria-hidden="true"></span>
+            <span>过滤字母</span>
+          </label>
+          <label class="filter-chip">
+            <input type="checkbox" id="filter-other-letter" checked />
+            <span class="box" aria-hidden="true"></span>
+            <span>过滤其他字母 <i class="chip-example">か 가 ㄅ</i></span>
+          </label>
+          <label class="filter-chip">
+            <input type="checkbox" id="filter-mark" checked />
+            <span class="box" aria-hidden="true"></span>
+            <span>过滤组合音标 <i class="chip-example">e\u0301 a\u0300 o\u0308</i></span>
+          </label>
+        </div>
+        <p id="summary" class="summary">正在加载数据...</p>
+      </div>
       <section id="results" class="results" aria-live="polite"></section>
     </div>
   </main>
@@ -319,7 +435,16 @@
 
     function render() {
       if (!huReady) return;
-      const chars = Array.from(query.value).filter((char) => !/\s/.test(char));
+      const chars = Array.from(query.value).filter((char) => {
+        if (/\s/.test(char)) return false;
+        for (const f of fixedRules) {
+          if (f.regex.test(char)) return false;
+        }
+        for (const f of filterRules) {
+          if (f.enabled && f.regex.test(char)) return false;
+        }
+        return true;
+      });
       if (!chars.length) {
         summary.textContent = '输入文字后开始查询';
         results.innerHTML = '<div class="empty">结果会显示在这里</div>';
@@ -378,6 +503,25 @@
     const progress = {total: 0, loaded: 0};
     const progressBar = document.querySelector('.progress-bar');
     const WUBI_FILES = {'86': '86_ws.txt', '98': '98_ws.txt', '06': '06_ws.txt'};
+
+    const filterRules = [
+      {id: 'filter-punct', key: 'split-filter-punct', regex: /[\p{P}\p{S}]/u},
+      {id: 'filter-digit', key: 'split-filter-digit', regex: /(?!\u3007)\p{N}/u},
+      {id: 'filter-letter', key: 'split-filter-letter', regex: /\p{Lu}|\p{Ll}/u},
+      {id: 'filter-other-letter', key: 'split-filter-other-letter', regex: /(?![\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff\u{20000}-\u{2fa1f}])\p{Lo}/u},
+      {id: 'filter-mark', key: 'split-filter-mark', regex: /\p{M}/u}
+    ];
+    const fixedRules = [{regex: /\p{Cf}/u}];
+    filterRules.forEach((rule) => {
+      const el = document.getElementById(rule.id);
+      rule.enabled = localStorage.getItem(rule.key) !== 'off';
+      el.checked = rule.enabled;
+      el.addEventListener('change', () => {
+        rule.enabled = el.checked;
+        localStorage.setItem(rule.key, rule.enabled ? 'on' : 'off');
+        render();
+      });
+    });
 
     function ensureWubi() {
       if (wubiStarted) return;
