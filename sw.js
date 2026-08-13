@@ -1,6 +1,7 @@
 const FONT_CACHE = 'tiger-fonts-v1';
 const DATA_CACHE = 'tiger-data-v1';
 const APP_CACHE = 'tiger-app-v1';
+const ACTIVE_CACHES = [FONT_CACHE, DATA_CACHE, APP_CACHE];
 
 const PRECACHE_FONTS = [
   'fonts/TumanPUA.ttf',
@@ -33,7 +34,11 @@ self.addEventListener('activate', (e) => {
     caches
       .keys()
       .then((keys) =>
-        Promise.all(keys.filter((k) => !k.startsWith('tiger-')).map((k) => caches.delete(k))),
+        Promise.all(
+          keys
+            .filter((k) => !ACTIVE_CACHES.includes(k))
+            .map((k) => caches.delete(k)),
+        ),
       )
       .then(() => self.clients.claim())
       .then(() => {
@@ -78,16 +83,24 @@ self.addEventListener('fetch', (e) => {
 
 const inflight = new Map();
 
-async function fetchAndCache(url, cacheName) {
-  const key = cacheName + '|' + url.href;
+async function fetchAndCache(url, cacheName, {networkFirst = false} = {}) {
+  const key = cacheName + '|' + url.href + '|' + (networkFirst ? 'n' : 'c');
   if (inflight.has(key)) return inflight.get(key);
   const p = (async () => {
     const cache = await caches.open(cacheName);
-    const cached = await cache.match(url);
-    if (cached) return cached;
-    const response = await fetch(url);
-    if (response && response.ok) cache.put(url, response.clone());
-    return response;
+    if (!networkFirst) {
+      const cached = await cache.match(url);
+      if (cached) return cached;
+    }
+    try {
+      const response = await fetch(url);
+      if (response && response.ok) cache.put(url, response.clone());
+      return response;
+    } catch (err) {
+      const cached = await cache.match(url);
+      if (cached) return cached;
+      throw err;
+    }
   })();
   inflight.set(key, p);
   try {
@@ -132,12 +145,5 @@ async function cacheFirst(request, cacheName) {
 
 async function networkFirst(request, cacheName) {
   const url = new URL(request.url);
-  try {
-    return await fetchAndCache(url, cacheName);
-  } catch (err) {
-    const cache = await caches.open(cacheName);
-    const cached = await cache.match(request);
-    if (cached) return cached;
-    throw err;
-  }
+  return fetchAndCache(url, cacheName, {networkFirst: true});
 }
