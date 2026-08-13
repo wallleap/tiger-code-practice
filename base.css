@@ -13,6 +13,31 @@
   src: url("fonts/WubiPUA.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "TH-Times";
+  src: url("fonts/TH-Times.ttc") format("collection");
+}
+
+@font-face {
+  font-family: "TH-Tshyn-P0";
+  src: url("fonts/TH-Tshyn-P0.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TH-Tshyn-P1";
+  src: url("fonts/TH-Tshyn-P1.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TH-Tshyn-P2";
+  src: url("fonts/TH-Tshyn-P2.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "TH-Tshyn-P16";
+  src: url("fonts/TH-Tshyn-P16.ttf") format("truetype");
+}
+
 :root {
   --primary-color: #6366f1;
   /* Indigo 500 */
