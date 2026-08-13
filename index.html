@@ -1218,10 +1218,21 @@
       }
     }
 
+    // 优先加载 .gz，用 DecompressionStream 解压；失败或浏览器不支持时回退原文件
+    async function fetchText(url) {
+      const gzUrl = url + ".gz";
+      const gzRes = await fetch(gzUrl);
+      if (gzRes.ok && "DecompressionStream" in window) {
+        const stream = gzRes.body.pipeThrough(new DecompressionStream("gzip"));
+        return await new Response(stream).text();
+      }
+      const plain = await fetch(url);
+      if (!plain.ok) throw new Error("Network response was not ok");
+      return plain.text();
+    }
+
     async function loadData(mode) {
-      const response = await fetch(DATA_FILES[mode]);
-      if (!response.ok) throw new Error("Network response was not ok");
-      const text = await response.text();
+      const text = await fetchText(DATA_FILES[mode]);
       parseData(text);
     }
 

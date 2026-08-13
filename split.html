@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>虎码拆分查询</title>
   <link rel="stylesheet" href="base.css" />
+  <link rel="preload" href="data/hu_cf.txt.gz" as="fetch" crossorigin />
+  <link rel="preload" href="data/zi_py.txt.gz" as="fetch" crossorigin />
   <style>
     header {
       display: flex;
@@ -135,6 +137,10 @@
 
     .method.missing {
       opacity: .55;
+    }
+
+    .method.pending {
+      opacity: .4;
     }
 
     .method-name {
@@ -295,6 +301,9 @@
       const labelStyle = `style="color:#fff;background:${method.color}"`;
       const codeStyle = `style="color:${method.color}"`;
       const rowStyle = `style="background:${method.bg}"`;
+      if (!loadedMethods.has(key)) {
+        return `<div class="method pending" ${rowStyle}><span class="method-name" ${labelStyle}>${method.name}</span><span class="method-radicals">加载中…</span><span class="method-code"></span></div>`;
+      }
       if (!item) {
         return `<div class="method missing" ${rowStyle}><span class="method-name" ${labelStyle}>${method.name}</span><span class="method-radicals">—</span><span class="method-code"></span></div>`;
       }
@@ -303,6 +312,7 @@
     }
 
     function render() {
+      if (!huReady) return;
       const chars = Array.from(query.value).filter((char) => !/\s/.test(char));
       if (!chars.length) {
         summary.textContent = '输入文字后开始查询';
@@ -311,24 +321,96 @@
       }
       summary.textContent = `共 ${chars.length} 个字符`;
       results.innerHTML = chars.map((char) => {
-        const found = METHODS.some((m) => splitStore(m.key, char).has(char));
+        const found = METHODS.some((m) => loadedMethods.has(m.key) && splitStore(m.key, char).has(char));
         const rows = METHODS.map((m) => methodRow(m.key, char)).join('');
         return `<article class="character${found ? '' : ' not-found'}"><div class="character-head"><div class="pinyin">${escapeHtml(pinyin.get(char) || '—')}</div><div class="hanzi">${escapeHtml(char)}</div></div><div class="methods">${rows}</div></article>`;
       }).join('');
     }
 
+    function updateProgress() {
+      const pct = progress.total ? Math.min(100, (progress.loaded / progress.total) * 100) : 0;
+      progressBar.style.width = pct + '%';
+    }
+
+    function resetProgress() {
+      progress.total = 0;
+      progress.loaded = 0;
+      updateProgress();
+    }
+
+    // 优先加载 .gz，用 DecompressionStream 解压；失败或浏览器不支持时回退原文件
+    async function fetchText(url) {
+      const gzUrl = url + '.gz';
+      const gzRes = await fetch(gzUrl);
+      if (gzRes.ok && 'DecompressionStream' in window) {
+        const total = +gzRes.headers.get('content-length') || 0;
+        if (total) progress.total += total;
+        const reader = gzRes.body.getReader();
+        const chunks = [];
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          if (total) {
+            progress.loaded += value.length;
+            updateProgress();
+          }
+        }
+        const buf = await new Blob(chunks).arrayBuffer();
+        const stream = new Response(buf).body.pipeThrough(new DecompressionStream('gzip'));
+        return await new Response(stream).text();
+      }
+      const plain = await fetch(url);
+      if (!plain.ok) throw new Error('数据加载失败');
+      return plain.text();
+    }
+
+    const loadedMethods = new Set();
+    let huReady = false;
+    let wubiStarted = false;
+    let wubiDone = 0;
+    const progress = { total: 0, loaded: 0 };
+    const progressBar = document.querySelector('.progress-bar');
+    const WUBI_FILES = { '86': '86_ws.txt', '98': '98_ws.txt', '06': '06_ws.txt' };
+
+    function ensureWubi() {
+      if (wubiStarted) return;
+      wubiStarted = true;
+      summary.textContent = '正在加载五笔数据...';
+      resetProgress();
+      Object.keys(WUBI_FILES).forEach((key) => {
+        fetchText('data/' + WUBI_FILES[key])
+          .then((t) => parseWubi(t, key))
+          .then(() => {
+            loadedMethods.add(key);
+            wubiDone++;
+            if (wubiDone === Object.keys(WUBI_FILES).length) {
+              progress.loaded = progress.total;
+              updateProgress();
+            }
+            render();
+          })
+          .catch((err) => { summary.textContent = err.message; });
+      });
+    }
+
     async function init() {
       try {
-        const sources = [
-          fetch('data/hu_cf.txt').then((r) => { if (!r.ok) throw new Error('虎码数据加载失败'); return r.text(); }).then(parseHu),
-          fetch('data/zi_py.txt').then((r) => { if (!r.ok) throw new Error('拼音数据加载失败'); return r.text(); }).then(parsePinyin),
-          fetch('data/86_ws.txt').then((r) => { if (!r.ok) throw new Error('86五笔数据加载失败'); return r.text(); }).then((t) => parseWubi(t, '86')),
-          fetch('data/98_ws.txt').then((r) => { if (!r.ok) throw new Error('98五笔数据加载失败'); return r.text(); }).then((t) => parseWubi(t, '98')),
-          fetch('data/06_ws.txt').then((r) => { if (!r.ok) throw new Error('新世纪数据加载失败'); return r.text(); }).then((t) => parseWubi(t, '06'))
-        ];
-        await Promise.all(sources);
+        const [huTxt, pyTxt] = await Promise.all([
+          fetchText('data/hu_cf.txt').then((t) => { if (!t) throw new Error('虎码数据加载失败'); return t; }),
+          fetchText('data/zi_py.txt').then((t) => { if (!t) throw new Error('拼音数据加载失败'); return t; })
+        ]);
+        parseHu(huTxt);
+        parsePinyin(pyTxt);
+        huReady = true;
+        loadedMethods.add('hu');
+        progress.loaded = progress.total;
+        updateProgress();
         render();
-        query.addEventListener('input', render);
+        query.addEventListener('input', () => {
+          ensureWubi();
+          render();
+        });
       } catch (error) {
         summary.textContent = error.message;
         results.innerHTML = '<div class="empty">无法加载查询数据，请稍后重试。</div>';
