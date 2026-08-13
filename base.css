@@ -8,6 +8,11 @@
   src: url("fonts/PingFang-Mod.otf") format("truetype");
 }
 
+@font-face {
+  font-family: "WubiPUA";
+  src: url("fonts/WubiPUA.ttf") format("truetype");
+}
+
 :root {
   --primary-color: #6366f1;
   /* Indigo 500 */

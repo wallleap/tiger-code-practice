@@ -72,53 +72,103 @@
 
     .results {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: .8rem;
     }
 
     .character {
-      width: 104px;
-      min-height: 132px;
-      padding: .75rem .5rem;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: .9rem;
+      padding: .65rem .8rem;
       border: 1px solid rgba(255, 255, 255, .65);
       border-radius: 18px;
-      text-align: center;
       background: rgba(255, 255, 255, .68);
     }
 
+    .character-head {
+      flex: none;
+      min-width: 96px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .15rem;
+      padding-right: .8rem;
+      border-right: 1px dashed rgba(17, 24, 39, .12);
+      transform: translateY(-.63rem);
+    }
+
     .pinyin {
-      min-height: 1.3rem;
+      min-height: 1.1rem;
+      white-space: nowrap;
       color: var(--primary-color);
-      font-size: .85rem;
+      font-size: .8rem;
       font-weight: 600;
       overflow-wrap: anywhere;
     }
 
     .hanzi {
-      margin: .2rem 0;
-      font-size: 2.2rem;
+      font-size: 2rem;
       line-height: 1.15;
       font-weight: 700;
     }
 
-    .radical {
+    .methods {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+
+    .method {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .24rem .55rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .55);
+    }
+
+    .method.missing {
+      opacity: .55;
+    }
+
+    .method-name {
+      flex: none;
+      padding: .1rem .5rem;
+      border-radius: 999px;
+      font-size: .7rem;
+      font-weight: 700;
+      line-height: 1.6;
+      color: #fff;
+    }
+
+    .method-radicals {
+      flex: 1;
       min-height: 1.5rem;
       color: #374151;
-      font-family: 'TumanPUA', -apple-system, sans-serif;
       font-size: 1.15rem;
       overflow-wrap: anywhere;
     }
 
-    .code {
-      margin-top: .35rem;
-      color: var(--text-sub);
-      font: .75rem Monaco, Consolas, monospace;
+    .method-radicals.hu {
+      font-family: 'TumanPUA', -apple-system, sans-serif;
     }
 
-    .not-found .radical,
-    .not-found .code {
-      color: #9ca3af;
-      font-family: inherit;
+    .method-radicals.wubi {
+      font-family: 'WubiPUA', -apple-system, sans-serif;
+    }
+
+    .method-code {
+      flex: none;
+      color: var(--primary-color);
+      font: .7rem Monaco, Consolas, monospace;
+      font-weight: 700;
+      letter-spacing: .03em;
     }
 
     .empty {
@@ -157,11 +207,6 @@
         font-size: .78rem;
         text-align: center;
       }
-
-      .character {
-        width: calc(25% - .6rem);
-        min-width: 72px;
-      }
     }
   </style>
 </head>
@@ -180,7 +225,7 @@
     <header>
       <h1>拆分查询</h1>
     </header>
-    <p class="hint">输入文字，查看每个字的拼音和虎码拆分。</p>
+    <p class="hint">输入文字，查看每个字的拼音及虎码、五笔（86/98/新世纪）拆分。</p>
     <textarea id="query" placeholder="例如：你好，世界" autofocus></textarea>
     <p id="summary" class="summary">正在加载数据...</p>
     <section id="results" class="results" aria-live="polite"></section>
@@ -190,17 +235,29 @@
     const query = document.getElementById('query');
     const results = document.getElementById('results');
     const summary = document.getElementById('summary');
-    const decompositions = new Map();
     const pinyin = new Map();
+    const huSplits = new Map();
+    const wubiSplits = { '86': new Map(), '98': new Map(), '06': new Map() };
+
+    const METHODS = [
+      { key: 'hu', name: '虎码', font: 'hu', color: '#6366f1', bg: '#f7f9ff' },
+      { key: '86', name: '86五笔', font: 'wubi', color: '#059669', bg: '#f0fdf6' },
+      { key: '98', name: '98五笔', font: 'wubi', color: '#d97706', bg: '#fffaf0' },
+      { key: '06', name: '新世纪', font: 'wubi', color: '#dc2626', bg: '#fdf6f6' }
+    ];
 
     function escapeHtml(value) {
       return String(value).replace(/[&<>'"]/g, (char) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'})[char]);
     }
 
-    function parseDecompositions(text) {
+    function splitStore(key, char) {
+      return key === 'hu' ? huSplits : wubiSplits[key];
+    }
+
+    function parseHu(text) {
       text.split(/\r?\n/).forEach((line) => {
         const match = line.match(/^(.+?)\t〔(.+?)&nbsp;·&nbsp;(.+?)〕$/);
-        if (match) decompositions.set(match[1], {radical: match[2].replace(/&nbsp;/g, ' '), code: match[3]});
+        if (match) huSplits.set(match[1], {radical: match[2].replace(/&nbsp;/g, ' '), code: match[3].replace(/&nbsp;/g, ' ')});
       });
     }
 
@@ -209,6 +266,40 @@
         const match = line.match(/^(.+?)\s*（(.+)）$/);
         if (match) pinyin.set(match[1], match[2].replace(/&nbsp;/g, ' '));
       });
+    }
+
+    // 五笔文件格式：字\t[※拆分※,※编码※,※拼音(可选)※,※字符集※]
+    function parseWubi(text, method) {
+      text.split(/\r?\n/).forEach((line) => {
+        const match = line.match(/^(.+?)\t\[(.*)\]$/);
+        if (!match) return;
+        const fields = match[2].split(',');
+        if (fields.length < 2) return;
+        const radicals = fields[0].replace(/^※|※$/g, '').split('※');
+        const py = fields.length >= 4 ? fields[2].replace(/^※|※$/g, '').replace(/_/g, ' ') : '';
+        wubiSplits[method].set(match[1], {
+          radicals: radicals,
+          code: fields[1].replace(/^※|※$/g, ''),
+          pinyin: py
+        });
+        if (!pinyin.has(match[1]) && py && !/^\d+$/.test(py)) {
+          pinyin.set(match[1], py);
+        }
+      });
+    }
+
+    function methodRow(key, char) {
+      const store = splitStore(key, char);
+      const item = store.get(char);
+      const method = METHODS.find((m) => m.key === key);
+      const labelStyle = `style="color:#fff;background:${method.color}"`;
+      const codeStyle = `style="color:${method.color}"`;
+      const rowStyle = `style="background:${method.bg}"`;
+      if (!item) {
+        return `<div class="method missing" ${rowStyle}><span class="method-name" ${labelStyle}>${method.name}</span><span class="method-radicals">—</span><span class="method-code"></span></div>`;
+      }
+      const radicals = key === 'hu' ? item.radical : item.radicals.join(' ');
+      return `<div class="method" ${rowStyle}><span class="method-name" ${labelStyle}>${method.name}</span><span class="method-radicals ${method.font}">${escapeHtml(radicals)}</span><span class="method-code" ${codeStyle}>${escapeHtml(item.code)}</span></div>`;
     }
 
     function render() {
@@ -220,17 +311,22 @@
       }
       summary.textContent = `共 ${chars.length} 个字符`;
       results.innerHTML = chars.map((char) => {
-        const item = decompositions.get(char);
-        return `<article class="character${item ? '' : ' not-found'}"><div class="pinyin">${escapeHtml(pinyin.get(char) || '—')}</div><div class="hanzi">${escapeHtml(char)}</div><div class="radical">${escapeHtml(item ? item.radical : '暂无拆分')}</div><div class="code">${escapeHtml(item ? item.code : '')}</div></article>`;
+        const found = METHODS.some((m) => splitStore(m.key, char).has(char));
+        const rows = METHODS.map((m) => methodRow(m.key, char)).join('');
+        return `<article class="character${found ? '' : ' not-found'}"><div class="character-head"><div class="pinyin">${escapeHtml(pinyin.get(char) || '—')}</div><div class="hanzi">${escapeHtml(char)}</div></div><div class="methods">${rows}</div></article>`;
       }).join('');
     }
 
     async function init() {
       try {
-        const [decompositionResponse, pinyinResponse] = await Promise.all([fetch('data/hu_cf.txt'), fetch('data/zi_py.txt')]);
-        if (!decompositionResponse.ok || !pinyinResponse.ok) throw new Error('数据加载失败');
-        parseDecompositions(await decompositionResponse.text());
-        parsePinyin(await pinyinResponse.text());
+        const sources = [
+          fetch('data/hu_cf.txt').then((r) => { if (!r.ok) throw new Error('虎码数据加载失败'); return r.text(); }).then(parseHu),
+          fetch('data/zi_py.txt').then((r) => { if (!r.ok) throw new Error('拼音数据加载失败'); return r.text(); }).then(parsePinyin),
+          fetch('data/86_ws.txt').then((r) => { if (!r.ok) throw new Error('86五笔数据加载失败'); return r.text(); }).then((t) => parseWubi(t, '86')),
+          fetch('data/98_ws.txt').then((r) => { if (!r.ok) throw new Error('98五笔数据加载失败'); return r.text(); }).then((t) => parseWubi(t, '98')),
+          fetch('data/06_ws.txt').then((r) => { if (!r.ok) throw new Error('新世纪数据加载失败'); return r.text(); }).then((t) => parseWubi(t, '06'))
+        ];
+        await Promise.all(sources);
         render();
         query.addEventListener('input', render);
       } catch (error) {
