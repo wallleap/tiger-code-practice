@@ -606,6 +606,11 @@
     });
 
     init();
+
+    // 注册 Service Worker 缓存字体与数据
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
   </script>
 </body>
 
