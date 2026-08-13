@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const { exec } = require("child_process");
 
-const PORT = 8080;
+const PORT = 8081;
 const MIME_TYPES = {
   ".html": "text/html",
   ".js": "text/javascript",
@@ -46,8 +46,8 @@ http
           res.writeHead(500);
           res.end(
             "Sorry, check with the site admin for error: " +
-              error.code +
-              " ..\n",
+            error.code +
+            " ..\n",
           );
         }
       } else {
