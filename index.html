@@ -562,27 +562,6 @@
       display: none !important;
     }
 
-    .toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-100px);
-      background: rgba(0, 0, 0, 0.8);
-      color: white;
-      padding: 12px 24px;
-      border-radius: 50px;
-      font-size: 1rem;
-      font-weight: 500;
-      z-index: 1000;
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      pointer-events: none;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .toast.visible {
-      transform: translateX(-50%) translateY(0);
-    }
-
     /* 清除数据 Modal */
     .modal-overlay {
       position: fixed;
@@ -782,12 +761,12 @@
     <a class="active" href="index.html">虎码练习</a>
     <a href="table.html">字根表</a>
     <a href="split.html">拆分查询</a>
+    <div id="toast" class="toast"></div>
+    <div id="cache-indicator" class="cache-indicator">
+      <span id="cache-indicator-text">正在缓存资源</span>
+      <span class="bar"><span class="bar-fill" id="cache-indicator-bar"></span></span>
+    </div>
   </nav>
-  <div id="toast" class="toast"></div>
-  <div id="cache-indicator" class="cache-indicator">
-    <span id="cache-indicator-text">正在缓存资源</span>
-    <span class="bar"><span class="bar-fill" id="cache-indicator-bar"></span></span>
-  </div>
   <div class="container">
     <div class="content">
       <div class="progress-container">

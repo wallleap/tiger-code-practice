@@ -143,35 +143,47 @@ body {
   transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.toast,
 .cache-indicator {
-  position: fixed;
-  top: 20px;
+  position: absolute;
+  top: calc(100% + 10px);
   left: 50%;
-  transform: translateX(-50%);
-  background: rgba(17, 24, 39, 0.88);
-  color: #fff;
+  transform: translateX(-50%) translateY(-6px) scale(0.98);
+  transform-origin: top center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
   padding: 8px 16px;
   border-radius: 999px;
   font-size: 0.85rem;
   font-weight: 500;
-  z-index: 1001;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  white-space: nowrap;
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.86);
+  border: var(--glass-border);
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1);
 }
 
+.toast.visible,
 .cache-indicator.visible {
   opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
 }
 
 .cache-indicator .bar {
   width: 90px;
   height: 6px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(99, 102, 241, 0.15);
   overflow: hidden;
 }
 
@@ -184,7 +196,9 @@ body {
 }
 
 .cache-indicator.done {
-  background: rgba(16, 185, 129, 0.9);
+  color: #065f46;
+  background: rgba(209, 250, 229, 0.94);
+  border-color: rgba(16, 185, 129, 0.4);
 }
 
 h1 {
