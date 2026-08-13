@@ -11,6 +11,13 @@
 }
 
 @font-face {
+  font-family: "PF-Root";
+  src: url("fonts/PingFang-Mod.otf") format("truetype");
+  font-display: swap;
+  unicode-range: U+2F71, U+79B8;
+}
+
+@font-face {
   font-family: "WubiPUA";
   src: url("fonts/WubiPUA.ttf") format("truetype");
   font-display: swap;
@@ -71,7 +78,7 @@
   --glass-border: 1px solid rgba(255, 255, 255, 0.5);
   --container-max-width: 1200px;
   --font-cjk: "PingFang SC", "PingFangMod", "TH-Times", "TH-Tshyn-P0", "TH-Tshyn-P1", "TH-Tshyn-P2", "TH-Tshyn-P16";
-  --font-root: "TumanPUA", "TH-Times", "TH-Tshyn-P0", "TH-Tshyn-P1", "TH-Tshyn-P2", "TH-Tshyn-P16", serif;
+  --font-root: "TumanPUA", "PF-Root", "TH-Times", "TH-Tshyn-P0", "TH-Tshyn-P1", "TH-Tshyn-P2", "TH-Tshyn-P16", serif;
 }
 
 * {
