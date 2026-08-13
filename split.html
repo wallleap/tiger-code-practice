@@ -55,7 +55,7 @@
       border-radius: 16px;
       outline: none;
       color: var(--text-main);
-      font: inherit;
+      font-family: var(--font-cjk), sans-serif;
       font-size: 1.1rem;
       background: #fff;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .05);
@@ -113,6 +113,7 @@
     }
 
     .hanzi {
+      font-family: var(--font-cjk), sans-serif;
       font-size: 2rem;
       line-height: 1.15;
       font-weight: 700;
@@ -162,7 +163,7 @@
     }
 
     .method-radicals.hu {
-      font-family: 'TumanPUA', -apple-system, sans-serif;
+      font-family: 'TumanPUA', serif;
     }
 
     .method-radicals.wubi {
@@ -225,16 +226,16 @@
   </nav>
   <main class="container">
     <div class="content">
-    <div class="progress-container">
-      <div class="progress-bar"></div>
-    </div>
-    <header>
-      <h1>拆分查询</h1>
-    </header>
-    <p class="hint">输入文字，查看每个字的拼音及虎码、五笔（86/98/新世纪）拆分。</p>
-    <textarea id="query" placeholder="例如：你好，世界" autofocus></textarea>
-    <p id="summary" class="summary">正在加载数据...</p>
-    <section id="results" class="results" aria-live="polite"></section>
+      <div class="progress-container">
+        <div class="progress-bar"></div>
+      </div>
+      <header>
+        <h1>拆分查询</h1>
+      </header>
+      <p class="hint">输入文字，查看每个字的拼音及虎码、五笔（86/98/新世纪）拆分。</p>
+      <textarea id="query" placeholder="例如：你好，世界" autofocus></textarea>
+      <p id="summary" class="summary">正在加载数据...</p>
+      <section id="results" class="results" aria-live="polite"></section>
     </div>
   </main>
   <script>
@@ -243,13 +244,13 @@
     const summary = document.getElementById('summary');
     const pinyin = new Map();
     const huSplits = new Map();
-    const wubiSplits = { '86': new Map(), '98': new Map(), '06': new Map() };
+    const wubiSplits = {'86': new Map(), '98': new Map(), '06': new Map()};
 
     const METHODS = [
-      { key: 'hu', name: '虎码', font: 'hu', color: '#6366f1', bg: '#f7f9ff' },
-      { key: '86', name: '86五笔', font: 'wubi', color: '#059669', bg: '#f0fdf6' },
-      { key: '98', name: '98五笔', font: 'wubi', color: '#d97706', bg: '#fffaf0' },
-      { key: '06', name: '新世纪', font: 'wubi', color: '#dc2626', bg: '#fdf6f6' }
+      {key: 'hu', name: '虎码', font: 'hu', color: '#6366f1', bg: '#f7f9ff'},
+      {key: '86', name: '86五笔', font: 'wubi', color: '#059669', bg: '#f0fdf6'},
+      {key: '98', name: '98五笔', font: 'wubi', color: '#d97706', bg: '#fffaf0'},
+      {key: '06', name: '新世纪', font: 'wubi', color: '#dc2626', bg: '#fdf6f6'}
     ];
 
     function escapeHtml(value) {
@@ -347,8 +348,8 @@
         if (total) progress.total += total;
         const reader = gzRes.body.getReader();
         const chunks = [];
-        for (;;) {
-          const { done, value } = await reader.read();
+        for (; ;) {
+          const {done, value} = await reader.read();
           if (done) break;
           chunks.push(value);
           if (total) {
@@ -369,9 +370,9 @@
     let huReady = false;
     let wubiStarted = false;
     let wubiDone = 0;
-    const progress = { total: 0, loaded: 0 };
+    const progress = {total: 0, loaded: 0};
     const progressBar = document.querySelector('.progress-bar');
-    const WUBI_FILES = { '86': '86_ws.txt', '98': '98_ws.txt', '06': '06_ws.txt' };
+    const WUBI_FILES = {'86': '86_ws.txt', '98': '98_ws.txt', '06': '06_ws.txt'};
 
     function ensureWubi() {
       if (wubiStarted) return;
@@ -390,15 +391,15 @@
             }
             render();
           })
-          .catch((err) => { summary.textContent = err.message; });
+          .catch((err) => {summary.textContent = err.message;});
       });
     }
 
     async function init() {
       try {
         const [huTxt, pyTxt] = await Promise.all([
-          fetchText('data/hu_cf.txt').then((t) => { if (!t) throw new Error('虎码数据加载失败'); return t; }),
-          fetchText('data/zi_py.txt').then((t) => { if (!t) throw new Error('拼音数据加载失败'); return t; })
+          fetchText('data/hu_cf.txt').then((t) => {if (!t) throw new Error('虎码数据加载失败'); return t;}),
+          fetchText('data/zi_py.txt').then((t) => {if (!t) throw new Error('拼音数据加载失败'); return t;})
         ]);
         parseHu(huTxt);
         parsePinyin(pyTxt);

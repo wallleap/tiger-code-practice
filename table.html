@@ -94,6 +94,7 @@
       border-radius: 16px;
       background: white;
       font-size: 1rem;
+      font-family: var(--font-cjk), sans-serif;
       color: var(--text-main);
       outline: none;
       transition: all 0.2s;
@@ -157,14 +158,14 @@
     }
 
     .card-main {
-      font-family: "TumanPUA", "PingFang SC", "TH-Times", "TH-Tshyn-P0", "TH-Tshyn-P1", "TH-Tshyn-P2", "TH-Tshyn-P16", "PingFangMod", sans-serif;
+      font-family: var(--font-root);
       font-size: 3rem;
       color: var(--text-main);
       line-height: 1;
     }
 
     .card-variants {
-      font-family: "TumanPUA", "PingFang SC", "TH-Times", "TH-Tshyn-P0", "TH-Tshyn-P1", "TH-Tshyn-P2", "TH-Tshyn-P16", "PingFangMod", sans-serif;
+      font-family: var(--font-root);
       font-size: 1.5rem;
       color: var(--text-sub);
       opacity: 0.8;
@@ -305,14 +306,14 @@
     }
 
     .mini-root-main {
-      font-family: "TumanPUA", "PingFang SC", "TH-Times", "TH-Tshyn-P0", "TH-Tshyn-P1", "TH-Tshyn-P2", "TH-Tshyn-P16", "PingFangMod", sans-serif;
+      font-family: "TumanPUA", var(--font-cjk), sans-serif;
       font-size: 1.4rem;
       color: var(--text-main);
       line-height: 1;
     }
 
     .mini-root-variants {
-      font-family: "TumanPUA", "PingFang SC", "TH-Times", "TH-Tshyn-P0", "TH-Tshyn-P1", "TH-Tshyn-P2", "TH-Tshyn-P16", "PingFangMod", sans-serif;
+      font-family: var(--font-root);
       font-size: 0.9rem;
       color: var(--text-sub);
       margin-left: 2px;
@@ -347,7 +348,7 @@
     }
 
     .tooltip-chars {
-      font-family: "TumanPUA", "PingFang SC", "TH-Times", "TH-Tshyn-P0", "TH-Tshyn-P1", "TH-Tshyn-P2", "TH-Tshyn-P16", "PingFangMod", sans-serif;
+      font-family: "TumanPUA", var(--font-cjk), sans-serif;
       font-size: 1.8rem;
       margin-bottom: 4px;
       line-height: 1.2;
@@ -387,33 +388,33 @@
   </nav>
   <div class="container">
     <div class="content">
-    <div class="progress-container">
-      <div class="progress-bar"></div>
-    </div>
-    <header>
-      <div class="header-top">
-        <h1>虎码字根表</h1>
+      <div class="progress-container">
+        <div class="progress-bar"></div>
       </div>
-      <div class="search-wrapper">
-        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="search" placeholder="搜索字根或编码..." class="search-input" />
-      </div>
-    </header>
+      <header>
+        <div class="header-top">
+          <h1>虎码字根表</h1>
+        </div>
+        <div class="search-wrapper">
+          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="search" placeholder="搜索字根或编码..." class="search-input" />
+        </div>
+      </header>
 
-    <div id="grid" class="grid">
-      <div class="loading">正在加载数据...</div>
-    </div>
-
-    <div class="keyboard-section">
-      <h2 class="keyboard-title">键盘分区表</h2>
-      <div class="keyboard-container">
-        <div id="keyboard-view"></div>
+      <div id="grid" class="grid">
+        <div class="loading">正在加载数据...</div>
       </div>
-    </div>
+
+      <div class="keyboard-section">
+        <h2 class="keyboard-title">键盘分区表</h2>
+        <div class="keyboard-container">
+          <div id="keyboard-view"></div>
+        </div>
+      </div>
     </div>
   </div>
 
