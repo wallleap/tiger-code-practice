@@ -856,6 +856,20 @@
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
               </button>
+              <button type="button" class="mode-select-option" data-mode="radical_adv" role="option"
+                aria-selected="false">
+                <svg class="mode-select-option-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                  <polyline points="2 17 12 22 22 17"></polyline>
+                  <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+                <span class="mode-select-option-label">字根进阶练习</span>
+                <svg class="mode-select-option-check" viewBox="0 0 24 24" fill="none" stroke-width="3"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </button>
               <button type="button" class="mode-select-option" data-mode="char" role="option" aria-selected="false">
                 <svg class="mode-select-option-icon" viewBox="0 0 24 24" fill="none" stroke-width="2.5"
                   stroke-linecap="round" stroke-linejoin="round">
@@ -975,7 +989,7 @@
           <input type="radio" name="clear-scope" value="all-sessions" />
           <span>所有模式进度</span>
         </span>
-        <span class="clear-option-desc">清除字根练习和单字练习的进度，保留设置</span>
+        <span class="clear-option-desc">清除字根练习、字根进阶练习和单字练习的进度，保留设置</span>
       </label>
       <label class="clear-option">
         <span class="clear-option-head">
@@ -1072,6 +1086,7 @@
     // 练习模式对应的数据文件
     const DATA_FILES = {
       radical: "data/虎码字根.txt",
+      radical_adv: "data/虎码字根进阶.txt",
       char: "data/单字编码.txt",
     };
 
@@ -1107,7 +1122,11 @@
     ];
 
     // ---- 自定义下拉（练习模式）----
-    const MODE_LABELS = {radical: "字根练习", char: "单字练习"};
+    const MODE_LABELS = {
+      radical: "字根练习",
+      radical_adv: "字根进阶练习",
+      char: "单字练习",
+    };
 
     function setModeSelectUI(mode) {
       modeSelectLabel.textContent = MODE_LABELS[mode] || mode;
@@ -1621,6 +1640,7 @@
       } else if (scope === "all-sessions") {
         // 清所有模式进度，保留设置
         await dbService.save("session:radical", null);
+        await dbService.save("session:radical_adv", null);
         await dbService.save("session:char", null);
         location.reload();
       } else {

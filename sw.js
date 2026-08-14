@@ -16,6 +16,7 @@ const PRECACHE_FONTS = [
 
 const PRECACHE_DATA = [
   'data/虎码字根.txt.gz',
+  'data/虎码字根进阶.txt.gz',
   'data/单字编码.txt.gz',
   'data/zhmnwhei.txt.gz',
   'data/hu_cf.txt.gz',
