@@ -1,33 +1,33 @@
 的	u_ unid	白勹丶
 一	f_ fi	一
 是	o_ ots	日
-了	r_ rl	了
-不	c_ cb	不
-在	n_ nggt	𠂇丨土
-有	nv_ nvy	𠂇⺝
-个	jg_ jgs	人丨
-人	j_ jr	人
-这	vu_ vuc	文辶
+了	r_ rl2	了
+不	c_ cb2	不
+在	n_ nggt2	𠂇丨土
+有	nv_ nvy2	𠂇⺝
+个	jg_ jgs2	人丨
+人	j_ jr2	人
+这	vu_ vuc3	文辶
 上	yf_ yfi	⺊一
 中	d_ dgs	口丨
-大	m_ md	大
+大	m_ md2	大
 为	i_ isid	丶力丶
 来	a_ ahb	未丷
 我	t_ tupg	丿扌戈
-到	y_ ypd	至刂
+到	y_ ypd2	至刂
 出	sm_ smk	屮凵
-要	v_ vbn	覀女
+要	v_ vbn2	覀女
 以	vj_ vjr	人
 时	ok_ okc	日寸
 和	x_ xdk	禾口
 地	ge_ gey	土也
 们	ja_ jam	亻门
 得	w_ wofk	彳日一寸
-可	z_ zk	可
+可	z_ zk2	可
 下	fy_ fyb	一卜
 对	rk_ rkc	又寸
 生	ls	生
-也	e_ ey	也
+也	e_ ey2	也
 子	hi	子
 就	g_ gyoy	小尤
 过	ku_ kuc	寸辶
@@ -37,13 +37,13 @@
 多	ll_ llx	夕夕
 发	sr_ srid	又丶
 说	s_ shdp	讠丷口儿
-而	l_ le	而
+而	l_ le2	而
 于	fn_ fns	一
 自	oi	自
 之	ri	之
 用	ty	用
 年	ev_ evk	𠂉
-行	p_ px	行
+行	p_ px2	行
 家	wj_ wjs	宀豕
 方	lf	方
 后	xf_ xfdk	⺁一口
@@ -56,15 +56,15 @@
 小	yx	小
 心	hx	心
 前	hv_ hvpd	䒑⺝刂
-所	mt_ mtj	斤
+所	mt_ mtj2	斤
 道	h_ houc	䒑自辶
 法	kg_ kgks	氵土厶
 如	b_ bdk	女口
-进	qu_ quc	井辶
+进	qu_ quc2	井辶
 着	gq_ gqm	⺶目
 同	mf_ mfdk	冂一口
 经	ir_ irug	纟ス工
-分	hp_ hpd	八刀
+分	hp_ hpd2	八刀
 定	wt_ wts	宀疋
 都	q_ qote	耂日阝
 然	vm_ vmch	犬灬
@@ -74,7 +74,7 @@
 其	zh_ zhb	
 当	yb_ ybj	⺌彐
 起	pv_ pvj	走己
-动	bs_ bsl	云力
+动	bs_ bsl2	云力
 已	vi	已
 两	ml	两
 点	yd_ ydch	⺊口灬
@@ -83,9 +83,9 @@
 里	dl	里
 主	in_ inw	丶王
 实	ww_ wwmd	宀⺀大
-天	fm_ fmd	一大
+天	fm_ fmd2	一大
 高	gg	高
-去	gk_ gks	土厶
+去	gk_ gks2	土厶
 现	ne_ nej	王见
 长	pc	长
 此	sv_ svb	匕
@@ -100,7 +100,7 @@
 日	or	日
 些	svm_ svme	匕二
 看	uq_ uqm	龵目
-只	dh_ dhb	口八
+只	dh_ dhb2	口八
 公	hk_ hks	八厶
 等	rg_ rgkc	⺮土寸
 十	ns	十
@@ -111,7 +111,7 @@
 间	ao_ aor	门日
 把	umb	扌巴
 情	ha_ havy	忄龶⺝
-者	qo_ qor	耂日
+者	qo_ qor2	耂日
 没	kr_ krs	氵殳
 重	ldl	千里
 相	eqm	木目
@@ -149,9 +149,9 @@
 身	zs	身
 入	ju	入
 内	mj_ mjr	冂人
-第	rt_ rtf	⺮𢎨
-平	eh_ ehb	干丷
-被	tr_ trp	衤皮
+第	rt_ rtf2	⺮𢎨
+平	eh_ ehb2	干丷
+被	tr_ trp3	衤皮
 给	ij_ ijdk	纟亼口
 次	we_ weq	冫欠
 别	ds_ dspd	口力刂
@@ -180,13 +180,13 @@
 性	hls	忄生
 西	vx	西
 你	jx_ jxyx	亻小
-放	lh_ lhp	方攵
+放	lh_ lhp2	方攵
 表	ati	龶
 目	qm	目
 加	sd_ sdk	力口
 常	srj	巾
 做	jc_ jchp	亻古攵
-己	vjj vj	己
+己	vjj vj2	己
 老	ql	老
 四	ys	四
 件	jq_ jqn	亻牛
@@ -194,8 +194,8 @@
 路	psg	⻊各
 更	fo_ fobi	一日
 走	pz	走
-比	vv_ vvb	匕
-总	hd_ hdhx	丷口心
+比	vv_ vvb2	匕
+总	hd_ hdhx2	丷口心
 金	zj	金
 管	rwk_ rwki	⺮宀㠯
 光	mg	光
@@ -216,16 +216,16 @@
 神	fog_ fogs	礻日丨
 山	vs	山
 数	pb_ pbhp	米女攵
-利	xp_ xpd	禾刂
+利	xp_ xpd2	禾刂
 书	aa_ aagi	ヿヿ丨丶
 代	jp_ jpi	亻弋
 直	nqf_ nqfi	十一
-色	xm_ xmb	⺈巴
+色	xm_ xmb2	⺈巴
 场	ga_ gaes	土ㄋ
 变	zc_ zcry	亠又
 记	svj	讠己
 张	bp_ bpc	弓长
-必	ht_ htp	心丿
+必	ht_ htp2	心丿
 受	ywr_ ywry	爫冖又
 交	ab_ abi	六乂
 非	rf	非
@@ -237,13 +237,13 @@
 太	mi_ mid	大丶
 万	fp_ fpd	一
 各	sg	各
-算	rql_ rqlc	⺮目廾
-边	su_ suc	力辶
+算	rql_ rqlc2	⺮目廾
+边	su_ suc2	力辶
 王	nw	王
 什	jns	亻十
 快	hn_ hnjr	忄人
 许	se_ sens	讠𠂉十
-连	yu_ yuc	车辶
+连	yu_ yuc2	车辶
 五	wu	五
 活	ka_ kas	氵舌
 思	qh_ qhx	田心
@@ -252,7 +252,7 @@
 海	kek_ kekm	氵𠂉母
 指	uv_ uvor	扌匕日
 物	qne_ qnes	牜勹
-则	op_ opd	贝刂
+则	op_ opd2	贝刂
 女	bn	女
 或	pdf_ pdfi	戈口㇀
 完	wmp_ wmpe	宀二儿
@@ -260,7 +260,7 @@
 强	bd_ bdcc	弓口虫
 言	sy	言
 条	he_ hem	夂木
-特	qg_ qgkc	牜土寸
+特	qg_ qgkc2	牜土寸
 命	jdz_ jdzj	亼口卩
 感	nf_ nfdh	戊一口心
 清	kav_ kavy	氵龶⺝
@@ -303,15 +303,15 @@
 决	wnj_ wnjr	冫人
 未	aw	未
 花	lj_ ljvb	艹亻
-收	ih_ ihp	丩攵
-满	kl_ klml	氵艹两
-每	ek_ ekm	𠂉母
+收	ih_ ihp2	丩攵
+满	kl_ klml2	氵艹两
+每	ek_ ekm2	𠂉母
 华	jvn_ jvns	亻十
 业	cy	业
 南	nmg_ nmgy	十冂
 觉	kwe_ kwej	⺍冖见
 电	oa_ oae	日乚
-空	eu_ eug	穴工
+空	eu_ eug2	穴工
 眼	qi_ qig	目艮
 听	dtj	口斤
 远	mp_ mpuc	二儿辶
@@ -319,11 +319,11 @@
 元	mpe	二儿
 请	sav_ savy	讠龶⺝
 容	whg	宀谷
-她	be_ bey	女也
+她	be_ bey2	女也
 军	wyc	冖车
 士	gs	士
 百	fu_ fub	一白
-办	sh_ shb	力八
+办	sh_ shb2	力八
 语	sw_ swdk	讠五口
 期	zhv_ zhvy	月
 北	av_ avb	匕
@@ -338,18 +338,18 @@
 候	jgn_ jgno	亻丨矢
 单	hq_ hqns	丷田十
 音	xy	音
-台	kd_ kdk	厶口
+台	kd_ kdk2	厶口
 死	gv_ gvb	歹匕
 视	fe_ fej	礻见
 领	jkw_ jkwy	亽龴页
-失	th_ thf	丿夫
+失	th_ thf2	丿夫
 司	afd_ afdk	㇆一口
 亲	iem	立朩
 始	bkd_ bkdk	女厶口
 极	ec_ ecj	木及
 双	rr_ rry	又又
 令	jks	亽龴
-改	vh_ vhp	己攵
+改	vh_ vhp2	己攵
 功	usl	工力
 程	xdn_ xdnw	禾口王
 爱	yw_ ywnr	爫冖𠂇又
@@ -358,7 +358,7 @@
 切	rpd	七刀
 随	tn_ tnvu	阝𠂇⺝辶
 李	ehi	木子
-员	do_ dob	口贝
+员	do_ dob2	口贝
 离	zb_ zbmv	亠㐅凵禸
 轻	yr_ yrug	ス工
 观	rej	又见
@@ -379,7 +379,7 @@
 准	wui	冫隹
 兴	khb	⺍
 红	iug	纟工
-达	mu_ muc	大辶
+达	mu_ muc2	大辶
 早	on_ ons	日十
 尽	ciw_ ciwb	尸㇏⺀
 故	chp	古攵
@@ -388,7 +388,7 @@
 火	ch	火
 站	iyd_ iydk	立⺊口
 似	jvj_ jvjr	亻人
-找	up_ upg	扌戈
+找	up_ upg2	扌戈
 备	hqt	夂田
 调	smg_ smgd	讠⺆土口
 断	pat_ patj	米㇗斤
@@ -398,7 +398,7 @@
 拉	ui_ uil	扌立
 照	opd_ opdc	日刀口灬
 布	nrj	𠂇巾
-友	nr_ nry	𠂇又
+友	nr_ nry2	𠂇又
 整	xhf_ xhfs	束攵一止
 术	eid	木丶
 石	ms	石
@@ -408,7 +408,7 @@
 终	ihw_ ihwb	纟夂⺀
 周	mgd_ mgdk	⺆土口
 式	pug	弋工
-举	khu_ khus	⺍
+举	khu_ khus2	⺍
 飞	cf	飞
 片	ap	片
 虽	dc_ dcc	口虫
@@ -428,7 +428,7 @@
 注	ki_ kinw	氵丶王
 越	pn_ pnu	走戉
 千	lq	千
-微	wvf_ wvfh wvfo	彳山一攵
+微	wvf_ wvfh3 wvfo	彳山一攵
 若	lnd_ lndk	艹𠂇口
 约	ini_ inid	纟勹丶
 英	lm_ lmmd	艹大
@@ -442,7 +442,7 @@
 留	bq_ bqt	田
 称	xxy_ xxyx	禾小
 品	ddd_ dddk	口口口
-志	gh_ ghx	士心
+志	gh_ ghx2	士心
 黑	ph	黑
 存	ng_ nghi	𠂇丨子
 六	al	六
@@ -451,8 +451,8 @@
 江	kug	氵工
 念	jah_ jahx	亽心
 产	ixc	厂
-刻	kp_ kpd	亥刂
-节	lz_ lzj	艹卩
+刻	kp_ kpd2	亥刂
+节	lz_ lzj2	艹卩
 尔	xyx	小
 吃	de_ deai	口𠂉乙
 势	ukis	扌九丶力
@@ -470,9 +470,9 @@
 况	wd_ wdpe	冫口儿
 跟	pig	⻊艮
 罗	yl_ ylx	罒夕
-须	ew_ ewy	彡页
+须	ew_ ewy2	彡页
 显	ocy	日业
-热	uk_ ukic	扌九丶灬
+热	uk_ ukic2	扌九丶灬
 病	afm_ afmj	疒一冂人
 证	sf_ sfsi	讠一止
 刚	mbp_ mbpd	冂㐅刂
@@ -483,7 +483,7 @@
 阳	tor	阝日
 确	mx_ mxty	石⺈用
 究	ekj	穴九
-久	xi_ xid	㇏
+久	xi_ xid3	㇏
 除	tjx_ tjxh	阝人
 闻	aq_ aqe	门耳
 答	rjd_ rjdk	⺮亼口
@@ -512,13 +512,13 @@
 广	xg	广
 奇	mzk	大可
 愿	xuy_ xuyh	厂白小心
-欢	re_ req	又欠
+欢	re_ req2	又欠
 希	bnr_ bnrj	㐅𠂇巾
 母	km	母
 香	xor	禾日
-破	mr_ mrp	石皮
+破	mr_ mrp2	石皮
 谁	sui	讠隹
-致	yh_ yhp	至攵
+致	yh_ yhp2	至攵
 线	ifp_ ifpg	纟一戈
 急	xbh_ xbhx	⺈彐心
 古	cg	古
@@ -526,8 +526,8 @@
 句	gj	句
 京	gyx	小
 甚	zha_ zhae	㇗
-仍	jv_ jvn	亻乃
-晚	owp_ owpe	日
+仍	jv_ jvn2	亻乃
+晚	owp_ owpe2	日
 争	xb_ xbv	⺈
 游	kle_ kleh	氵方𠂉子
 龙	tl	龙
@@ -537,7 +537,7 @@
 器	dd_ ddmd	口口犬口
 细	iq_ iqt	纟田
 木	em	木
-权	er_ ery	木又
+权	er_ ery2	木又
 星	ol_ ols	日生
 哪	dau_ daut	口㇆阝
 苦	lcg	艹古
@@ -590,7 +590,7 @@
 联	qhm_ qhmd	耳䒑大
 团	rnt_ rntp	囗丿
 冷	wjk_ wjks	冫亽龴
-玉	ni_ nid	王丶
+玉	ni_ nid3	王丶
 施	le_ leey	方𠂉也
 派	kx_ kxti	氵⺁
 纪	ivj	纟己
@@ -605,10 +605,10 @@
 银	zig	钅艮
 负	xo_ xob	⺈贝
 续	ina_ inam	纟十乛大
-吗	dn_ dnm	口马
+吗	dn_ dnm2	口马
 简	ra_ raor	⺮门日
 章	xns	音十
-左	nu_ nug	𠂇工
+左	nu_ nug2	𠂇工
 块	gn_ gnjr	土人
 索	nwi_ nwis	十冖糸
 酒	ky_ kyy	氵酉
@@ -629,8 +629,8 @@
 灵	bch	彐火
 脚	vg_ vgkz	月土厶卩
 继	ip_ ipae	纟米㇗
-楼	epb_ epbn	木米女
-景	ogy_ ogyx	日小
+楼	epb_ epbn2	木米女
+景	ogy_ ogyx2	日小
 怕	hub	忄白
 停	jga_ jgad	亻丁
 铁	zt_ zthf	钅丿夫
@@ -650,7 +650,7 @@
 需	tle	⻗而
 退	iuc	艮辶
 基	zhg_ zhgt	土
-右	nd_ ndk	𠂇口
+右	nd_ ndk2	𠂇口
 速	xuc	束辶
 适	auc	舌辶
 药	li_ lini	艹纟勹丶
@@ -668,9 +668,9 @@
 质	xno_ xnob	⺁十贝
 遇	qv_ qvuc	田⽱辶
 端	ivl_ ivle	立山而
-列	gp_ gpd	歹刂
+列	gp_ gpd2	歹刂
 印	bfz_ bfzj	一卩
-贵	co_ cob	贝
+贵	co_ cob2	贝
 疑	vo_ vokt	匕矢龴疋
 露	tps_ tpsg	⻗⻊各
 哥	zz_ zzk	可
@@ -687,19 +687,19 @@
 委	xbn	禾女
 州	oo_ ooc	川
 某	ze_ zem	甘木
-顺	ow_ owy	川页
+顺	ow_ owy2	川页
 省	ytq_ ytqm	𡭔丿目
 讨	skc	讠寸
 尚	ss	尚
 维	iu_ iui	纟隹
 板	exr_ exry	木⺁又
 散	lv_ lvhp	龷⺝攵
-项	uw_ uwy	工页
+项	uw_ uwy2	工页
 状	amq	丬犬
 追	tku_ tkuc	丿㠯辶
 笔	rv_ rvm	⺮毛
 副	fdq_ fdqp	一口田刂
-层	cb_ cby	尸云
+层	cb_ cby2	尸云
 沙	kyt_ kytp	氵𡭔丿
 养	gi_ gipd	⺶㇏
 读	snam	讠十乛大
@@ -725,7 +725,7 @@
 村	ekc	木寸
 著	lqo_ lqor	艹耂日
 食	qs	食
-导	vk_ vkc	巳寸
+导	vk_ vkc2	巳寸
 免	wp_ wpe	
 温	koa_ koam	氵日皿
 莫	lom_ lomd	艹日大
@@ -750,23 +750,23 @@
 藏	lnq_ lnqc	艹臣
 丽	fvv_ fvvy	一
 渐	kytj	氵斤
-刘	vp_ vpd	文刂
+刘	vp_ vpd3	文刂
 仅	jr_ jry	亻又
 肯	svy	止⺝
 担	uof_ uofi	扌日一
 扬	uaes	扌ㄋ
 盘	ia_ iam	舟皿
 唐	xbd_ xbdk	广肀口
-钟	zdg_ zdgs	钅口丨
+钟	zdg_ zdgs2	钅口丨
 级	icj	纟及
-毛	vmm vm	毛
+毛	vmm vm2	毛
 营	lwd_ lwdd	艹冖口口
 坚	prg_ prgt	〢又土
 松	ehk_ ehks	木八厶
 皮	rp	皮
 供	jlh_ jlhb	亻龷八
 店	xyd_ xydk	广⺊口
-饭	qx_ qxry	饣⺁又
+饭	qx_ qxry2	饣⺁又
 范	lkz_ lkzj	艹氵⺋
 哈	dj_ djdk	口亼口
 赶	peg	走干
@@ -782,7 +782,7 @@
 园	rmp_ rmpe	囗二儿
 烈	gpc_ gpch	歹刂灬
 配	yv_ yvj	酉己
-杂	ke_ kem	九木
+杂	ke_ kem2	九木
 短	oz_ ozd	矢豆
 卫	zfi	一
 跳	ppw_ ppww	⻊儿冫
@@ -801,13 +801,13 @@
 防	tlf	阝方
 脱	vhd_ vhdp	月丷口儿
 翻	tp_ tpqz	丿米田羽
-划	pp_ ppd	戈刂
+划	pp_ ppd2	戈刂
 迎	bz_ bzuc	卩辶
 痛	akt_ akty	疒龴
 校	eab_ eabi	木六乂
 窗	et_ etrh	穴丿囗夂
 宣	wfo_ wfof	宀一日一
-乡	ixx ix	乡
+乡	ixx ix2	乡
 杨	ea_ eaes	木ㄋ
 叶	dns	口十
 警	lg_ lghs	艹句攵言
@@ -869,8 +869,8 @@
 怪	hrg_ hrgt	忄又土
 宁	wad	宀丁
 替	hho_ hhor	夫夫曰
-犯	mz_ mzj	犭⺋
-灯	ca_ cad	火丁
+犯	mz_ mzj2	犭⺋
+灯	ca_ cad2	火丁
 优	joy	亻尤
 您	jxy_ jxyh	亻小心
 姓	bls	女生
@@ -887,7 +887,7 @@
 占	ydk	⺊口
 智	odo_ odor	矢口日
 佛	jtf	亻弗
-床	xe_ xem	广木
+床	xe_ xem2	广木
 米	pm	米
 凡	oid	几丶
 介	jpd	人
@@ -921,14 +921,14 @@
 夏	foh_ fohi	一自夊
 互	fb_ fbj	一彑
 积	xdh_ xdhb	禾口八
-街	pgg_ pggt	行土土
+街	pgg_ pggt2	行土土
 牌	aut_ autn	片白丿十
 休	jem	亻木
 摇	uyaf	扌爫缶
 洋	kgy	氵羊
 败	oh_ ohp	贝攵
 监	pra_ pram	〢皿
-骨	fgg fg	骨
+骨	fgg fg2	骨
 批	uvv_ uvvb	扌匕
 兄	dp_ dpe	口儿
 刀	pd	刀
@@ -970,7 +970,7 @@
 检	ejk_ ejkf	木亼⺍一
 伸	jog_ jogs	亻日丨
 欧	nbe_ nbeq	匸㐅欠
-攻	uh_ uhp	工攵
+攻	uh_ uhp2	工攵
 练	iry_ iryx	纟
 育	bvy	⺝
 危	xx_ xxzj	⺈厂⺋
