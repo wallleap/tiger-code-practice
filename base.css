@@ -266,8 +266,8 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
+  /* 与 nav 高度对齐：nav 内边距 0.3rem + nav-link 内边距 0.5rem */
+  padding: 0.8rem;
   border: var(--glass-border);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.86);
@@ -285,15 +285,16 @@ h1 {
 }
 
 .github-link svg {
+  display: block;
   width: 20px;
   height: 20px;
 }
 
 @media (max-width: 640px) {
   .github-link {
-    width: 40px;
-    height: 40px;
     right: 10px;
+    /* 移动端 nav-link 内边距为 0.45rem */
+    padding: 0.75rem;
   }
 
   .github-link svg {
