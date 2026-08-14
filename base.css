@@ -256,3 +256,48 @@ h1 {
   color: #fff;
   background: var(--primary-color);
 }
+
+/* 右上角 GitHub 图标，样式与 site-nav 保持一致 */
+.github-link {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border: var(--glass-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 8px 20px rgba(17, 24, 39, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-sub);
+  transition: all 0.2s ease;
+}
+
+.github-link:hover {
+  color: var(--primary-color);
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.github-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 640px) {
+  .github-link {
+    width: 40px;
+    height: 40px;
+    right: 10px;
+  }
+
+  .github-link svg {
+    width: 18px;
+    height: 18px;
+  }
+}
