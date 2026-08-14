@@ -1164,14 +1164,21 @@
       radical: "data/虎码字根.txt",
       radical_adv: "data/虎码字根进阶.txt",
       char: "data/单字编码.txt",
-      qian500: "data/03虎码前500.txt",
-      zhong500: "data/04虎码中500.txt",
-      hou500: "data/05虎码后500.txt",
-      qian1500: "data/06虎码前1500.txt",
+      qian500: "data/虎码前1500.txt",
+      zhong500: "data/虎码前1500.txt",
+      hou500: "data/虎码前1500.txt",
+      qian1500: "data/虎码前1500.txt",
     };
 
-    // 虎码前中后模式：数据只有中文，输入文字比对（不是编码），答错用 hu_cf 显示编码与拆分
+    // 虎码前中后模式：数据每行为 字\t编码\t拆分字根，输入文字比对（不是编码），答错显示行内编码与拆分
     const CHAR_MODES = new Set(["qian500", "zhong500", "hou500", "qian1500"]);
+    // 各模式从 虎码前1500.txt 截取的区间（行号，含头不含尾）
+    const CHAR_MODE_RANGES = {
+      qian500: [0, 500],
+      zhong500: [500, 1000],
+      hou500: [1000, 1500],
+      qian1500: [0, 1500],
+    };
 
     let roots = [];
     let currentRoot = null;
@@ -1390,98 +1397,40 @@
       parseData(text, mode);
     }
 
-    // 虎码前中后模式：答错/提示时展示编码与拆分字根（懒加载缓存）
-    // 编码优先用 单字编码.txt，找不到再回退 hu_cf；拆分字根用 hu_cf
-    let huCfMap = null;
-    let huCfPromise = null;
-    let charCodeMap = null;
-    let charCodePromise = null;
-
-    function ensureHuCf() {
-      if (huCfMap) return Promise.resolve(huCfMap);
-      if (huCfPromise) return huCfPromise;
-      huCfPromise = fetchText("data/hu_cf.txt")
-        .then((text) => {
-          huCfMap = new Map();
-          text.split(/\r?\n/).forEach((line) => {
-            const m = line.match(/^(.+?)\t〔(.+?)&nbsp;·&nbsp;(.+?)〕$/);
-            if (m) {
-              huCfMap.set(m[1], {
-                radical: m[2].replace(/&nbsp;/g, " "),
-                code: m[3].replace(/&nbsp;/g, " "),
-              });
-            }
-          });
-          return huCfMap;
-        })
-        .catch((err) => {
-          huCfPromise = null;
-          throw err;
-        });
-      return huCfPromise;
-    }
-
-    // 单字编码：字\t编码（编码末尾的 _/数字可忽略），优先作为答案编码
-    function ensureCharCodes() {
-      if (charCodeMap) return Promise.resolve(charCodeMap);
-      if (charCodePromise) return charCodePromise;
-      charCodePromise = fetchText("data/单字编码.txt")
-        .then((text) => {
-          // 文件前面是简码主表，后面附全码重复条目；保留第一条（简码）即可
-          text = text.replace(/^\uFEFF/, "");
-          charCodeMap = new Map();
-          text.split(/\r?\n/).forEach((line) => {
-            const [char, code] = line.split("\t");
-            if (char && code && !charCodeMap.has(char)) {
-              charCodeMap.set(char, code);
-            }
-          });
-          return charCodeMap;
-        })
-        .catch((err) => {
-          charCodePromise = null;
-          throw err;
-        });
-      return charCodePromise;
-    }
-
-    function showHuCfAnswer(char) {
-      rootAnswerEl.innerHTML = "";
-      Promise.all([ensureHuCf(), ensureCharCodes()])
-        .then(([huMap, codeMap]) => {
-          const huInfo = huMap.get(char);
-          // 编码优先取单字编码，其次 hu_cf；拆分字根取 hu_cf
-          const code = (codeMap.get(char) || (huInfo && huInfo.code) || "");
-          const radical = huInfo && huInfo.radical;
-          if (code || radical) {
-            const codeSpan = document.createElement("span");
-            codeSpan.className = "root-answer-code";
-            codeSpan.textContent = code;
-            const radSpan = document.createElement("span");
-            radSpan.className = "root-answer-radicals";
-            radSpan.textContent = radical || "";
-            rootAnswerEl.appendChild(codeSpan);
-            rootAnswerEl.appendChild(radSpan);
-          } else {
-            rootAnswerEl.textContent = "未找到拆分";
-          }
-        })
-        .catch(() => {
-          rootAnswerEl.textContent = "拆分数据加载失败";
-        });
+    // 虎码前中后：行内已含编码与拆分字根，答错/提示直接展示
+    function showHuCfAnswer(root) {
+      if (root && (root.code || root.radical)) {
+        rootAnswerEl.innerHTML = "";
+        const codeSpan = document.createElement("span");
+        codeSpan.className = "root-answer-code";
+        codeSpan.textContent = root.code || "";
+        const radSpan = document.createElement("span");
+        radSpan.className = "root-answer-radicals";
+        radSpan.textContent = root.radical || "";
+        rootAnswerEl.appendChild(codeSpan);
+        rootAnswerEl.appendChild(radSpan);
+      } else {
+        rootAnswerEl.textContent = "未找到拆分";
+      }
     }
 
     function parseData(text, mode) {
       const lines = text.split("\n");
       const newRoots = [];
       const isCharMode = CHAR_MODES.has(mode);
+      // 虎码前中后：四个模式共用 虎码前1500.txt，按区间截取
+      const range = isCharMode ? CHAR_MODE_RANGES[mode] : null;
 
-      lines.forEach((line) => {
+      lines.forEach((line, idx) => {
         const trimmed = line.trim();
         if (!trimmed) return;
         if (isCharMode) {
-          // 虎码前中后：数据只有中文，code 占位为字本身
-          newRoots.push({char: trimmed, code: trimmed, pinyin: undefined});
+          // 虎码前中后：字\t编码\t拆分字根，只取区间内的行
+          if (range && (idx < range[0] || idx >= range[1])) return;
+          const [char, code, radical] = trimmed.split("\t");
+          if (char) {
+            newRoots.push({char, code: code || "", radical: radical || "", pinyin: undefined});
+          }
           return;
         }
         const parts = trimmed.split(/\s+/);
@@ -1686,7 +1635,7 @@
           }
           inputField.classList.add("error");
           inputField.value = "";
-          showHuCfAnswer(currentRoot.char);
+          showHuCfAnswer(currentRoot);
           setTimeout(() => {
             inputField.classList.remove("error");
           }, 400);
@@ -1816,10 +1765,10 @@
       const hintDisplay = document.getElementById("input-hint");
       const userInput = document.getElementById("user-input");
 
-      // 虎码前中后模式：提示展示该字编码（优先单字编码）与拆分字根，而非输入框内提示
+      // 虎码前中后模式：提示展示行内编码与拆分字根，而非输入框内提示
       if (CHAR_MODES.has(currentMode)) {
         if ((showHint || tempHint) && currentRoot) {
-          showHuCfAnswer(currentRoot.char);
+          showHuCfAnswer(currentRoot);
         } else {
           rootAnswerEl.textContent = "";
         }

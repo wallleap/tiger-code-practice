@@ -6,7 +6,7 @@
 
 - 纯 HTML/CSS/JS 静态站点，无 package.json、无依赖、无构建；本地用 `server.js`（Node 内置 http）起服务。
 - 入口：`index.html`（练习页，inline CSS+JS）、`table.html`（字根表/键盘分区视图，支持拼音与例字搜索）、`split.html`（拆分查询：每字同时显示虎码与 86/98/新世纪五笔的拆分与编码）。
-- 数据：`data/虎码字根.txt`（主数据，练习与字根表都 fetch 它）；`data/zhmnwhei.txt`（从 tiger-code.com 抓取的增强数据，含例字）；`data/单字编码.txt`（单字→编码映射）；`data/hu_cf.txt`（拆分查询的虎码拆分）；`data/zi_py.txt`（拆分查询的拼音）；`data/86_ws.txt`、`data/98_ws.txt`、`data/06_ws.txt`（拆分查询的五笔拆分）。每个 `.txt` 旁配有 `.txt.gz` 预压缩版（GitHub Pages 不 gzip），页面用 `fetchText()` 优先加载并 `DecompressionStream` 解压，失败回落原文件。
+- 数据：`data/虎码字根.txt`（主数据，练习与字根表都 fetch 它）；`data/zhmnwhei.txt`（从 tiger-code.com 抓取的增强数据，含例字）；`data/单字编码.txt`（单字→编码映射）；`data/hu_cf.txt`（拆分查询的虎码拆分）；`data/虎码前1500.txt`（前中后练习合并数据，字+编码+拆分字根）；`data/zi_py.txt`（拆分查询的拼音）；`data/86_ws.txt`、`data/98_ws.txt`、`data/06_ws.txt`（拆分查询的五笔拆分）。每个 `.txt` 旁配有 `.txt.gz` 预压缩版（GitHub Pages 不 gzip），页面用 `fetchText()` 优先加载并 `DecompressionStream` 解压，失败回落原文件。
 - 字体：`fonts/` 下的 TumanPUA（虎码自造字根字体）、WubiPUA（五笔自造字根字体）、PingFang-Mod.otf（苹方修改字体）、TH-\*（天珩大字库系列），`base.css` 统一通过 `@font-face` 引用。
 - 缓存：`sw.js`（Service Worker，三页底部注册），运行时缓存——`/fonts/*` cache-first、`/data/*` 与页面/app 资源 network-first（离线回落缓存）；`activate` 后延迟 5s 兜底预缓存，页面加载后空闲时（`requestIdleCallback`，无则 `setTimeout` 兜底，首次加载等 `controllerchange`）向 SW `postMessage({type:'PRECACHE'})` 触发 `precacheAll()` 并发（3 路，in-flight 去重共享下载）预缓存 `PRECACHE_FONTS`/`PRECACHE_DATA` 列表（字根、单字、拼音、拆分、五笔数据的 `.gz` 版）。SW 通过 `{type:'PRECACHE_PROGRESS', done/total/failed}` 回传进度，三页的 `setupCacheProgress()` 显示顶部缓存进度条。新增数据/字体文件时记得加入对应列表。
 - 部署：GitHub Pages，push 到 `main` 触发 `.github/workflows/static.yml`，上传仓库根目录。
@@ -36,7 +36,7 @@
   - 虎码拆分 `data/hu_cf.txt`：`字\t〔拆分字根&nbsp;·&nbsp;编码〕`（多字根用 `&nbsp;` 分隔，处理时替换成真实空格）。
   - 拼音 `data/zi_py.txt`：`字\t（拼音）`，多音用 `&nbsp;` 分隔；拆分查询页主用它，缺失时回退到五笔文件自带的拼音字段（`_` 分隔）。
   - 五笔拆分 `data/86_ws.txt` / `data/98_ws.txt` / `data/06_ws.txt`：`字\t[※拆分※,※编码※,※拼音(可选)※,※字符集※]`，拆分字段内每个字根以 `※` 分隔，PUA 字形用 `WubiPUA` 字体渲染。
-- 虎码前中后xxx：只有中文，用户输入文字后比对（不是编码了），正确跳下一个，错误/提示使用单字编码（优先使用其中的编码）、hu_cf 中的数据，显示该字的编码及拆分字根。
+- 虎码前中后xxx：数据为 `data/虎码前1500.txt`，每行 `字\t编码\t拆分字根`（编码为简码与全码合并去重、空格连接，如 `一→f_ fi`）。四个模式（前500/中500/后500/前1500）共用此文件，按区间截取（见 `CHAR_MODE_RANGES`）：前500=0-500 行、中500=500-1000、后500=1000-1500、前1500=全部。用户输入文字后比对（不是编码了），正确跳下一个，错误/提示直接显示行内编码及拆分字根。
 - 页面用 inline `<script>`/`<style>`，2 空格缩进，单引号，中文注释与中文 UI 文案。
 - 处理汉字/变体用 `Array.from()` 按 Unicode 码点切分（见 `updateRootDisplayContent`），不要用索引下标。
 - 字体和 CSS 变量（`--primary-color` 等 indigo 玻璃拟态主题）集中定义在 `<style>` 头部。
