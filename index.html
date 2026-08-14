@@ -752,6 +752,11 @@
         width: auto;
         padding: 0.75rem 1.5rem;
       }
+
+      /* 键盘弹出时只把输入框顶起（平滑过渡），页面不整体上移 */
+      .input-wrapper {
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      }
     }
   </style>
 </head>
@@ -1589,6 +1594,35 @@
         showOneTimeHint();
       }
     });
+
+    // ---- 移动端键盘弹出时只顶起输入框（平滑过渡）----
+    const inputWrapper = inputField.parentElement;
+    let inputBottomInitial = 0;
+
+    function syncKeyboardPosition() {
+      if (document.activeElement !== inputField) return;
+      const vv = window.visualViewport;
+      if (!vv) return;
+      // iOS 下 innerHeight 不变、visualViewport 高度缩小 = 键盘占位；
+      // Android 缩后排版的浏览器则自动布局到键盘上方，无需位移
+      const keyboardOpen = vv.height < window.innerHeight - 1;
+      const translateY = keyboardOpen ? vv.height - inputBottomInitial : 0;
+      inputWrapper.style.transform = `translateY(${translateY}px)`;
+    }
+
+    inputField.addEventListener("focus", () => {
+      inputBottomInitial = inputWrapper.getBoundingClientRect().bottom;
+      syncKeyboardPosition();
+    });
+
+    inputField.addEventListener("blur", () => {
+      inputWrapper.style.transform = "translateY(0px)";
+    });
+
+    if ("visualViewport" in window) {
+      window.visualViewport.addEventListener("resize", syncKeyboardPosition);
+      window.visualViewport.addEventListener("scroll", syncKeyboardPosition);
+    }
 
     // 自定义下拉交互
     modeSelectTrigger.addEventListener("click", (e) => {
