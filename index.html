@@ -1645,51 +1645,36 @@
       }
     });
 
-    // ---- 移动端键盘弹出：蒙层 + 练习区（字符区/输入框）整体浮于键盘上方 ----
+    // ---- 移动端键盘弹出：蒙层 + 练习区浮到页面上部，其余内容不动 ----
     const practiceStage = document.querySelector(".practice-stage");
     const docStyle = document.documentElement.style;
     const isMobile = window.matchMedia("(max-width: 640px)").matches;
     let stageTopInitial = 0;
 
-    function syncStage() {
-      const vv = window.visualViewport;
-      if (!vv) return;
-      const keyboardOpen = vv.height < window.innerHeight - 1;
-      const stageTop = keyboardOpen
-        ? vv.height - practiceStage.offsetHeight
-        : stageTopInitial;
-      docStyle.setProperty("--stage-top", stageTop + "px");
-    }
-
     inputField.addEventListener("focus", () => {
-      if (!isMobile || !("visualViewport" in window)) return;
+      if (!isMobile) return;
       const rect = practiceStage.getBoundingClientRect();
       stageTopInitial = rect.top;
       docStyle.setProperty("--stage-left", rect.left + "px");
       docStyle.setProperty("--stage-width", rect.width + "px");
-      const flowSpace =
+      docStyle.setProperty(
+        "--stage-flow-space",
         rect.height +
-        parseFloat(getComputedStyle(practiceStage).marginBottom);
-      docStyle.setProperty("--stage-flow-space", flowSpace + "px");
+          parseFloat(getComputedStyle(practiceStage).marginBottom) +
+          "px",
+      );
+      // 先停在原位，下一帧再滑到页面上部，配合 transition 实现平滑过渡
+      docStyle.setProperty("--stage-top", stageTopInitial + "px");
       document.body.classList.add("keyboard-open");
-      requestAnimationFrame(syncStage);
+      requestAnimationFrame(() => {
+        docStyle.setProperty("--stage-top", "76px");
+      });
     });
 
     inputField.addEventListener("blur", () => {
       if (!isMobile) return;
       document.body.classList.remove("keyboard-open");
     });
-
-    if ("visualViewport" in window) {
-      window.visualViewport.addEventListener("resize", () => {
-        if (
-          document.activeElement === inputField &&
-          document.body.classList.contains("keyboard-open")
-        ) {
-          syncStage();
-        }
-      });
-    }
 
     // 自定义下拉交互
     modeSelectTrigger.addEventListener("click", (e) => {
