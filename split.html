@@ -43,6 +43,7 @@
 
     .hint {
       margin: 0 0 1rem;
+      padding-left: .25rem;
       color: var(--text-sub);
     }
 
@@ -73,7 +74,71 @@
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 1rem;
-      margin: 1.25rem 0 .75rem;
+      margin: 0 0 .75rem;
+    }
+
+    .filter-bar {
+      margin: .75rem 0;
+      padding: .6rem .9rem;
+      border: var(--glass-border);
+      border-radius: 16px;
+      background: rgba(243, 244, 246, .6);
+    }
+
+    .filter-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .5rem;
+    }
+
+    .filter-title {
+      color: var(--text-sub);
+      font-size: .85rem;
+      font-weight: 600;
+    }
+
+    .filter-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, .85);
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: color .15s, background .15s;
+    }
+
+    .filter-toggle:hover {
+      color: var(--primary-color);
+      background: #fff;
+    }
+
+    .filter-toggle:focus-visible {
+      outline: 2px solid var(--primary-color);
+      outline-offset: 2px;
+    }
+
+    .filter-toggle .chevron {
+      transition: transform .25s ease;
+    }
+
+    .filter-bar.collapsed .filter-toggle .chevron {
+      transform: rotate(-90deg);
+    }
+
+    .filter-collapse {
+      display: grid;
+      grid-template-rows: 1fr;
+      transition: grid-template-rows .25s ease;
+    }
+
+    .filter-bar.collapsed .filter-collapse {
+      grid-template-rows: 0fr;
     }
 
     .filters {
@@ -81,6 +146,9 @@
       align-items: center;
       flex-wrap: wrap;
       gap: .5rem;
+      min-height: 0;
+      overflow: hidden;
+      padding-top: 0;
     }
 
     .filter-chip {
@@ -158,6 +226,7 @@
     .summary {
       color: var(--text-sub);
       font-size: .9rem;
+      padding-left: .25rem;
     }
 
     .results {
@@ -326,34 +395,46 @@
       </header>
       <p class="hint">输入文字，查看每个字的拼音及虎码、五笔（86/98/新世纪）拆分。</p>
       <textarea id="query" placeholder="例如：你好，世界" autofocus></textarea>
-      <div class="toolbar">
-        <div class="filters">
-          <label class="filter-chip">
-            <input type="checkbox" id="filter-punct" checked />
-            <span class="box" aria-hidden="true"></span>
-            <span>过滤标点/特殊符号</span>
-          </label>
-          <label class="filter-chip">
-            <input type="checkbox" id="filter-digit" checked />
-            <span class="box" aria-hidden="true"></span>
-            <span>过滤数字</span>
-          </label>
-          <label class="filter-chip">
-            <input type="checkbox" id="filter-letter" checked />
-            <span class="box" aria-hidden="true"></span>
-            <span>过滤字母</span>
-          </label>
-          <label class="filter-chip">
-            <input type="checkbox" id="filter-other-letter" checked />
-            <span class="box" aria-hidden="true"></span>
-            <span>过滤其他字母 <i class="chip-example">か 가 ㄅ</i></span>
-          </label>
-          <label class="filter-chip">
-            <input type="checkbox" id="filter-mark" checked />
-            <span class="box" aria-hidden="true"></span>
-            <span>过滤组合音标 <i class="chip-example">e\u0301 a\u0300 o\u0308</i></span>
-          </label>
+      <div class="filter-bar" id="filter-bar">
+        <div class="filter-head">
+          <span class="filter-title">过滤选项</span>
+          <button type="button" id="filter-toggle" class="filter-toggle" aria-expanded="true" aria-controls="filter-collapse" aria-label="折叠/展开过滤选项">
+            <svg class="chevron" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
+              <path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
         </div>
+        <div class="filter-collapse" id="filter-collapse">
+          <div class="filters">
+            <label class="filter-chip">
+              <input type="checkbox" id="filter-punct" checked />
+              <span class="box" aria-hidden="true"></span>
+              <span>过滤标点/特殊符号</span>
+            </label>
+            <label class="filter-chip">
+              <input type="checkbox" id="filter-digit" checked />
+              <span class="box" aria-hidden="true"></span>
+              <span>过滤数字</span>
+            </label>
+            <label class="filter-chip">
+              <input type="checkbox" id="filter-letter" checked />
+              <span class="box" aria-hidden="true"></span>
+              <span>过滤字母</span>
+            </label>
+            <label class="filter-chip">
+              <input type="checkbox" id="filter-other-letter" checked />
+              <span class="box" aria-hidden="true"></span>
+              <span>过滤其他字母 <i class="chip-example">か 가 ㄅ</i></span>
+            </label>
+            <label class="filter-chip">
+              <input type="checkbox" id="filter-mark" checked />
+              <span class="box" aria-hidden="true"></span>
+              <span>过滤组合音标 <i class="chip-example">e\u0301 a\u0300 o\u0308</i></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="toolbar">
         <p id="summary" class="summary">正在加载数据...</p>
       </div>
       <section id="results" class="results" aria-live="polite"></section>
@@ -521,6 +602,18 @@
         localStorage.setItem(rule.key, rule.enabled ? 'on' : 'off');
         render();
       });
+    });
+
+    const filterBar = document.getElementById('filter-bar');
+    const filterToggle = document.getElementById('filter-toggle');
+    if (localStorage.getItem('split-filter-collapsed') === '1') {
+      filterBar.classList.add('collapsed');
+      filterToggle.setAttribute('aria-expanded', 'false');
+    }
+    filterToggle.addEventListener('click', () => {
+      const collapsed = filterBar.classList.toggle('collapsed');
+      filterToggle.setAttribute('aria-expanded', String(!collapsed));
+      localStorage.setItem('split-filter-collapsed', collapsed ? '1' : '0');
     });
 
     function ensureWubi() {
