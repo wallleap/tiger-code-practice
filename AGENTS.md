@@ -36,6 +36,7 @@
   - 虎码拆分 `data/hu_cf.txt`：`字\t〔拆分字根&nbsp;·&nbsp;编码〕`（多字根用 `&nbsp;` 分隔，处理时替换成真实空格）。
   - 拼音 `data/zi_py.txt`：`字\t（拼音）`，多音用 `&nbsp;` 分隔；拆分查询页主用它，缺失时回退到五笔文件自带的拼音字段（`_` 分隔）。
   - 五笔拆分 `data/86_ws.txt` / `data/98_ws.txt` / `data/06_ws.txt`：`字\t[※拆分※,※编码※,※拼音(可选)※,※字符集※]`，拆分字段内每个字根以 `※` 分隔，PUA 字形用 `WubiPUA` 字体渲染。
+- 虎码前中后xxx：只有中文，用户输入文字后比对（不是编码了），正确跳下一个，错误/提示使用单字编码（优先使用其中的编码）、hu_cf 中的数据，显示该字的编码及拆分字根。
 - 页面用 inline `<script>`/`<style>`，2 空格缩进，单引号，中文注释与中文 UI 文案。
 - 处理汉字/变体用 `Array.from()` 按 Unicode 码点切分（见 `updateRootDisplayContent`），不要用索引下标。
 - 字体和 CSS 变量（`--primary-color` 等 indigo 玻璃拟态主题）集中定义在 `<style>` 头部。
