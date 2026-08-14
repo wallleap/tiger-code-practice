@@ -238,6 +238,11 @@
       color: var(--error-color);
     }
 
+    .practice-stage {
+      display: flex;
+      flex-direction: column;
+    }
+
     .root-display-container {
       margin: 1rem 0 2rem;
       height: 160px;
@@ -753,9 +758,44 @@
         padding: 0.75rem 1.5rem;
       }
 
-      /* 键盘弹出时只把输入框顶起（平滑过渡），页面不整体上移 */
-      .input-wrapper {
-        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+      /* 键盘弹出时：蒙层 + 字符区与输入框固定浮于键盘上方，其余内容不动 */
+      .keyboard-mask {
+        position: fixed;
+        inset: 0;
+        z-index: 120;
+        background: rgba(255, 255, 255, 0.6);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+      }
+
+      body.keyboard-open .keyboard-mask {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* .container 的 backdrop-filter/transform 会让 fixed 子元素以容器为包含块，
+         导致悬浮组定位错乱，键盘弹出时先解除 */
+      body.keyboard-open .container {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        transform: none;
+      }
+
+      body.keyboard-open .practice-stage {
+        position: fixed;
+        left: var(--stage-left, 0px);
+        top: var(--stage-top, 0px);
+        width: var(--stage-width, auto);
+        margin: 0;
+        z-index: 130;
+        transition: top 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      body.keyboard-open .bottom-section {
+        margin-top: var(--stage-flow-space, 0px);
       }
     }
   </style>
@@ -843,14 +883,16 @@
         </div>
       </header>
 
-      <div class="root-display-container">
-        <div id="root-char" class="root-display"></div>
-        <div id="root-pinyin" class="root-pinyin"></div>
-      </div>
+      <div class="practice-stage">
+        <div class="root-display-container">
+          <div id="root-char" class="root-display"></div>
+          <div id="root-pinyin" class="root-pinyin"></div>
+        </div>
 
-      <div class="input-wrapper">
-        <input type="text" id="user-input" placeholder="输入编码" autocomplete="off" spellcheck="false" />
-        <span id="input-hint" class="input-hint"></span>
+        <div class="input-wrapper">
+          <input type="text" id="user-input" placeholder="输入编码" autocomplete="off" spellcheck="false" />
+          <span id="input-hint" class="input-hint"></span>
+        </div>
       </div>
 
       <div class="bottom-section">
@@ -907,6 +949,9 @@
       </div>
     </div>
   </div>
+
+  <!-- 键盘弹出时的模糊蒙层 -->
+  <div id="keyboard-mask" class="keyboard-mask"></div>
 
   <!-- 清除数据 Modal -->
   <div id="clear-modal" class="modal-overlay hidden">
@@ -1595,33 +1640,50 @@
       }
     });
 
-    // ---- 移动端键盘弹出时只顶起输入框（平滑过渡）----
-    const inputWrapper = inputField.parentElement;
-    let inputBottomInitial = 0;
+    // ---- 移动端键盘弹出：蒙层 + 练习区（字符区/输入框）整体浮于键盘上方 ----
+    const practiceStage = document.querySelector(".practice-stage");
+    const docStyle = document.documentElement.style;
+    const isMobile = window.matchMedia("(max-width: 640px)").matches;
+    let stageTopInitial = 0;
 
-    function syncKeyboardPosition() {
-      if (document.activeElement !== inputField) return;
+    function syncStage() {
       const vv = window.visualViewport;
       if (!vv) return;
-      // iOS 下 innerHeight 不变、visualViewport 高度缩小 = 键盘占位；
-      // Android 缩后排版的浏览器则自动布局到键盘上方，无需位移
       const keyboardOpen = vv.height < window.innerHeight - 1;
-      const translateY = keyboardOpen ? vv.height - inputBottomInitial : 0;
-      inputWrapper.style.transform = `translateY(${translateY}px)`;
+      const stageTop = keyboardOpen
+        ? vv.height - practiceStage.offsetHeight
+        : stageTopInitial;
+      docStyle.setProperty("--stage-top", stageTop + "px");
     }
 
     inputField.addEventListener("focus", () => {
-      inputBottomInitial = inputWrapper.getBoundingClientRect().bottom;
-      syncKeyboardPosition();
+      if (!isMobile || !("visualViewport" in window)) return;
+      const rect = practiceStage.getBoundingClientRect();
+      stageTopInitial = rect.top;
+      docStyle.setProperty("--stage-left", rect.left + "px");
+      docStyle.setProperty("--stage-width", rect.width + "px");
+      const flowSpace =
+        rect.height +
+        parseFloat(getComputedStyle(practiceStage).marginBottom);
+      docStyle.setProperty("--stage-flow-space", flowSpace + "px");
+      document.body.classList.add("keyboard-open");
+      requestAnimationFrame(syncStage);
     });
 
     inputField.addEventListener("blur", () => {
-      inputWrapper.style.transform = "translateY(0px)";
+      if (!isMobile) return;
+      document.body.classList.remove("keyboard-open");
     });
 
     if ("visualViewport" in window) {
-      window.visualViewport.addEventListener("resize", syncKeyboardPosition);
-      window.visualViewport.addEventListener("scroll", syncKeyboardPosition);
+      window.visualViewport.addEventListener("resize", () => {
+        if (
+          document.activeElement === inputField &&
+          document.body.classList.contains("keyboard-open")
+        ) {
+          syncStage();
+        }
+      });
     }
 
     // 自定义下拉交互
