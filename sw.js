@@ -115,26 +115,36 @@ function precacheAll(onProgress) {
     ...PRECACHE_FONTS.map((rel) => [rel, FONT_CACHE]),
     ...PRECACHE_DATA.map((rel) => [rel, DATA_CACHE]),
   ];
-  let i = 0;
-  let done = 0;
-  let failed = 0;
-  const total = paths.length;
-  const worker = async () => {
-    while (i < paths.length) {
-      const [rel, cacheName] = paths[i++];
-      try {
-        const url = new URL(rel, self.registration.scope);
-        await fetchAndCache(url, cacheName);
-      } catch (err) {
-        failed++;
-      }
-      done++;
-      if (onProgress) onProgress({done, total, failed});
-      await new Promise((r) => setTimeout(r, 50));
+  return (async () => {
+    // 先筛出缺失项：已缓存的直接跳过，不计数也不上报，避免切换页面时重复闪现进度条
+    const missing = [];
+    for (const [rel, cacheName] of paths) {
+      const cache = await caches.open(cacheName);
+      const url = new URL(rel, self.registration.scope);
+      if (!(await cache.match(url))) missing.push([rel, cacheName]);
     }
-  };
-  const CONCURRENCY = 3;
-  return Promise.all(Array.from({length: CONCURRENCY}, () => worker()));
+    if (!missing.length) return;
+    let i = 0;
+    let done = 0;
+    let failed = 0;
+    const total = missing.length;
+    const worker = async () => {
+      while (i < missing.length) {
+        const [rel, cacheName] = missing[i++];
+        try {
+          const url = new URL(rel, self.registration.scope);
+          await fetchAndCache(url, cacheName);
+        } catch (err) {
+          failed++;
+        }
+        done++;
+        if (onProgress) onProgress({done, total, failed});
+        await new Promise((r) => setTimeout(r, 50));
+      }
+    };
+    const CONCURRENCY = 3;
+    return Promise.all(Array.from({length: CONCURRENCY}, () => worker()));
+  })();
 }
 
 async function cacheFirst(request, cacheName) {
